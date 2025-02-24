@@ -8,7 +8,7 @@ const router = express.Router();
 // User Routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/profile/:id", authMiddleware, getUserProfile); // Protect this route
+router.get("/profile/:id", authMiddleware, getUserProfile);
 router.put('/user-details', authMiddleware, saveUserDetails);
 
 module.exports = router;

@@ -4,28 +4,31 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const UserDetails = () => {
-  const [userId, setUserId] = useState("");
+  const [role, setRole] = useState("consumer");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [careerGoals, setCareerGoals] = useState("");
-  const [pastEducation, setPastEducation] = useState("");
-  const [skills, setSkills] = useState([]);
-  const [goals, setGoals] = useState([]);
+  const [age, setAge] = useState("");
+  const [contactNo, setContactNo] = useState("");
+  const [address, setAddress] = useState("");
+  const [serviceType, setServiceType] = useState("");
+  const [experience, setExperience] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
 
   const handleSaveDetails = async () => {
+    const userDetails = {
+      name,
+      email,
+      password,
+      age,
+      contact_no: contactNo,
+      role,
+      providerDetails: role === "provider" ? { serviceType, experience, hourlyRate } : undefined,
+      consumerDetails: role === "consumer" ? { address } : undefined,
+    };
+
     try {
-      const data = await apiRequest("/api/user-details/save-details", "POST", {
-        userId,
-        email,
-        password,
-        profile: {
-          name,
-          careerGoals,
-          pastEducation,
-          goals,
-        },
-      });
+      const data = await apiRequest("/api/user-details/save-details", "POST", userDetails);
       alert(data.message);
     } catch (error) {
       alert("Error saving details: " + error.message);
@@ -36,29 +39,127 @@ const UserDetails = () => {
     <>
       <Header />
       <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px", background: "#fff", boxShadow: "0 5px 10px rgba(0, 0, 0, 0.15)", borderRadius: "10px" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "20px", fontSize: "24px", fontWeight: "bold" }}>User Details</h2>
+        <h2 style={{ textAlign: "center", marginBottom: "20px", fontSize: "24px", fontWeight: "bold" }}>Profile</h2>
         <form>
-          {[
-            { label: "User ID", value: userId, setValue: setUserId, type: "text" },
-            { label: "Email", value: email, setValue: setEmail, type: "email" },
-            { label: "Password", value: password, setValue: setPassword, type: "password" },
-            { label: "Name", value: name, setValue: setName, type: "text" },
-            { label: "Career Goals", value: careerGoals, setValue: setCareerGoals, type: "text" },
-            { label: "Past Education", value: pastEducation, setValue: setPastEducation, type: "text" },
-            { label: "Skills (comma-separated)", value: skills.join(","), setValue: (e) => setSkills(e.target.value.split(",")), type: "text" },
-            { label: "Goals (comma-separated)", value: goals.join(","), setValue: (e) => setGoals(e.target.value.split(",")), type: "text" }
-          ].map((field, index) => (
-            <div key={index} style={{ marginBottom: "15px" }}>
-              <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>{field.label}</label>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Role</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  value="consumer"
+                  checked={role === "consumer"}
+                  onChange={() => setRole("consumer")}
+                />
+                Consumer
+              </label>
+              <label style={{ marginLeft: "20px" }}>
+                <input
+                  type="radio"
+                  value="provider"
+                  checked={role === "provider"}
+                  onChange={() => setRole("provider")}
+                />
+                Service Provider
+              </label>
+            </div>
+          </div>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Age</label>
+            <input
+              type="number"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              required
+              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Contact Number</label>
+            <input
+              type="text"
+              value={contactNo}
+              onChange={(e) => setContactNo(e.target.value)}
+              required
+              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+            />
+          </div>
+          {role === "consumer" && (
+            <div style={{ marginBottom: "15px" }}>
+              <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Address</label>
               <input
-                type={field.type}
-                value={field.value}
-                onChange={(e) => field.setValue(e)}
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 required
                 style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
               />
             </div>
-          ))}
+          )}
+          {role === "provider" && (
+            <>
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Service Type</label>
+                <input
+                  type="text"
+                  value={serviceType}
+                  onChange={(e) => setServiceType(e.target.value)}
+                  required
+                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+                />
+              </div>
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Experience (years)</label>
+                <input
+                  type="number"
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  required
+                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+                />
+              </div>
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Hourly Rate</label>
+                <input
+                  type="number"
+                  value={hourlyRate}
+                  onChange={(e) => setHourlyRate(e.target.value)}
+                  required
+                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+                />
+              </div>
+            </>
+          )}
           <button 
             type="button" 
             onClick={handleSaveDetails} 

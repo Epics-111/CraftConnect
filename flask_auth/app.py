@@ -8,11 +8,11 @@ from flask_limiter.util import get_remote_address
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 # Load environment variables from the .env file
 load_dotenv()
 
-app = Flask(__name__)
 
 # Initialize Flask-Limiter with default limits
 limiter = Limiter(
@@ -20,6 +20,14 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"]
 )
+
+
+# Enable CORS for the Flask app
+backend_url = os.getenv("FLASK_BACKEND_URL")
+frontend_url = os.getenv("REACT_FRONTEND_URL")
+CORS(app, resources={r"/*": {"origins": [frontend_url, backend_url]}})
+app = Flask(__name__)
+# Set the frontend URL from environment variable
 
 # Configure app settings using environment variables
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")  # Your secret key for JWT
@@ -77,6 +85,7 @@ def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    print(email, password)
 
     # Validate input
     if not email or not password:

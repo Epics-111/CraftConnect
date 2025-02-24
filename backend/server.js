@@ -8,13 +8,12 @@ const crypto = require("crypto");
 
 const userRoutes = require("./routes/userRoutes");
 const chatbotRoutes = require("./routes/chatbotRoutes");
-const careerGuidanceRoutes = require("./routes/careerGuidanceRoutes");
 const userDetailsRoutes = require('./routes/userDetailsRoutes');
+const serviceRouter = require('./routes/serviceRouter');
 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-console.log(process.env.REACT_FRONTEND_URL);
 
 
 // Rate Limiter Configuration
@@ -40,8 +39,8 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/chatbot", chatbotRoutes);
-app.use("/api/career-guidance", careerGuidanceRoutes);
-app.use("/api/user-details", userDetailsRoutes); // Ensure this line is present
+app.use("/api/user-details", userDetailsRoutes);
+app.use("/api/services", serviceRouter);
 
 // Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

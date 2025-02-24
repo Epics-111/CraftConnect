@@ -1,22 +1,29 @@
-const User = require("../models/User");
+const { User } = require("../models/User");
 
 const saveUserDetails = async (req, res) => {
-  const { profile } = req.body;
-  const { name, careerGoals, pastEducation, goals } = profile;
+  const { name, email, password, age, contact_no, role, providerDetails, consumerDetails } = req.body;
   console.log(req.body);
 
   try {
-    const user = req.user;
+    const user = await User.findById(req.user._id);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
     // Update existing user details
-    if (name) user.profile.name = name;
-    if (careerGoals) user.profile.careerGoals = careerGoals;
-    if (pastEducation) user.profile.pastEducation = pastEducation;
-    if (goals) user.profile.goals = goals;
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (password) user.password = password;
+    if (age) user.age = age;
+    if (contact_no) user.contact_no = contact_no;
+    if (role) user.role = role;
+    if (role === "provider" && providerDetails) {
+      user.providerDetails = providerDetails;
+    }
+    if (role === "consumer" && consumerDetails) {
+      user.consumerDetails = consumerDetails;
+    }
 
     await user.save();
 
