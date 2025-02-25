@@ -1,5 +1,10 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const User = require("../models/User");
+const { encrypt } = require("../utils/encryption");
+
 const { User } = require("../models/User");
+
 
 // Generate JWT Token
 const generateToken = (user) => {
@@ -11,13 +16,19 @@ const registerUser = async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
   try {
-    let user = await User.findOne({ email });
+    // deterministic hash of the email for lookup
+    const emailHash = crypto.createHash("sha256").update(email).digest("hex");
+    let user = await User.findOne({ emailHash });
 
     if (user) {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    user = new User({ email, password });
+    // userid will be email till @ symbol
+    const userId = email.substring(0, email.indexOf("@"));
+    const encryptedEmail = encrypt(email);
+    user = new User({ userId, email: encryptedEmail, emailHash, password });
+
     await user.save();
 
     const token = generateToken(user);
@@ -33,7 +44,9 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    // email hash from the provided email
+    const emailHash = crypto.createHash("sha256").update(email).digest("hex");
+    const user = await User.findOne({ emailHash });
     if (user && user.password === password) {
       const token = generateToken(user);
       res.status(200).json({ message: "Login successful", token });

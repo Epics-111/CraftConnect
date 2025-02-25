@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
+
 const UserSchema = new mongoose.Schema({
   name: { type: String, maxlength: 100 },
   email: { type: String, required: true, unique: true, maxlength: 100 },
+  emailHash: {type: String, required: true},              // Deterministic hash for lookup
   password: { type: String, required: true, maxlength: 100 },
   age: { type: Number },
   contact_no: { type: Number },
