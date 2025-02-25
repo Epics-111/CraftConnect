@@ -9,7 +9,6 @@ import ServiceDetails from "./pages/ServiceDetails";
 import ProtectedRoute from './components/ProtectedRoute';
 import UserDetails from "./pages/UserDetails";
 import Reviews from "./pages/Reviews";
-import Register from "./pages/Register";
 
 function App() {
   return (
@@ -22,7 +21,6 @@ function App() {
           <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
           <Route path="/service/:id" element={<ProtectedRoute><ServiceDetails /></ProtectedRoute>} />
           <Route path="/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />
-          <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

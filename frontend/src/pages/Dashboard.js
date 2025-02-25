@@ -1,10 +1,9 @@
-// src/pages/Dashboard.js
 import React from "react";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
-import Card from "../components/Card";
 import Chatbot from "../components/Chatbot";
+import { FaUsers, FaTools, FaCheckCircle } from "react-icons/fa";
 import "./Dashboard.css";
 
 const services = [
@@ -16,34 +15,83 @@ const services = [
 
 const Dashboard = () => {
   return (
-    <div className="dashboard-container min-h-screen bg-gradient-to-r from-orange-500 to-indigo-600">
+    <div className="dashboard-container min-h-screen bg-gray-100">
       <Header />
-      <main className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-2xl text-center">
-        <h1 className="text-4xl font-bold text-gray-900">Welcome to Craft Connect</h1>
-        <p className="mt-4 text-gray-600">Find reliable professionals for all your daily needs.</p>
 
-        <div className="mt-6 flex flex-wrap justify-center gap-4">
-          <Link to="/services" className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition">View Services</Link>
-          <Link to="/register" className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition">Join as a Provider</Link>
+      {/* Hero Section */}
+      <section className="hero bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center py-16">
+        <h1 className="text-5xl font-extrabold">Find Trusted Professionals Near You</h1>
+        <p className="mt-4 text-lg">Book skilled service providers for your daily needs.</p>
+        <div className="mt-6 flex justify-center gap-4">
+          <Link to="/services" className="btn-primary">Explore All Services</Link>
         </div>
+      </section>
 
-        <div className="mt-8">
-          <h2 className="text-3xl font-semibold text-gray-800">Popular Services</h2>
-          <div className="grid-container">
-            {services.map((service, index) => (
-              <Link to={`/service/${index + 1}`} key={index} className="grid-item">
-                <img src={service.image} alt={service.name} />
-                <h3>{service.name}</h3>
-              </Link>
-            ))}
+      {/* Search Bar */}
+      <div className="search-container max-w-2xl mx-auto my-8 p-4 bg-white shadow-lg rounded-lg">
+        <input type="text" placeholder="Search for services..." className="search-input" />
+        <button className="search-btn">Search</button>
+      </div>
+
+      {/* Featured Services */}
+      <section className="max-w-6xl mx-auto my-10">
+        <h2 className="text-4xl font-bold text-center text-gray-800">Popular Services</h2>
+        <div className="service-grid">
+          {services.map((service, index) => (
+            <Link to={`/service/${index + 1}`} key={index} className="service-card">
+              <img src={service.image} alt={service.name} className="service-img" />
+              <h3 className="service-name">{service.name}</h3>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="how-it-works bg-gray-200 py-16">
+        <h2 className="text-4xl font-bold text-center text-gray-800">How It Works</h2>
+        <div className="steps-container">
+          <div className="step">
+            <FaTools className="step-icon" />
+            <h3>Find a Service</h3>
+            <p>Browse through verified professionals for your needs.</p>
+          </div>
+          <div className="step">
+            <FaUsers className="step-icon" />
+            <h3>Book a Professional</h3>
+            <p>Schedule an appointment at your convenience.</p>
+          </div>
+          <div className="step">
+            <FaCheckCircle className="step-icon" />
+            <h3>Get the Job Done</h3>
+            <p>Enjoy hassle-free, top-quality services.</p>
           </div>
         </div>
-      </main>
-      
-      <Card title="Chatbot">
-        <Chatbot />
-      </Card>
-      
+      </section>
+
+      {/* Stats Section */}
+      <section className="stats bg-indigo-600 text-white py-12">
+        <div className="stats-container">
+          <div className="stat">
+            <FaUsers className="stat-icon" />
+            <h3>5,000+</h3>
+            <p>Happy Customers</p>
+          </div>
+          <div className="stat">
+            <FaTools className="stat-icon" />
+            <h3>300+</h3>
+            <p>Verified Service Providers</p>
+          </div>
+          <div className="stat">
+            <FaCheckCircle className="stat-icon" />
+            <h3>10,000+</h3>
+            <p>Completed Jobs</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Chatbot */}
+      <Chatbot />
+
       <Footer />
     </div>
   );

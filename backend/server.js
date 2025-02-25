@@ -11,10 +11,11 @@ const chatbotRoutes = require("./routes/chatbotRoutes");
 const userDetailsRoutes = require('./routes/userDetailsRoutes');
 const serviceRouter = require('./routes/serviceRouter');
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust the proxy
+app.set('trust proxy', 1);
 
 // Rate Limiter Configuration
 const apiLimiter = rateLimit({
@@ -22,7 +23,6 @@ const apiLimiter = rateLimit({
   max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
-
 
 // Middleware
 app.use(bodyParser.json());
