@@ -11,9 +11,17 @@ const saveUserDetails = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    // Check if the new email already exists in the database and belongs to a different user
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== user._id.toString()) {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+      user.email = email;
+    }
+
     // Update existing user details
     if (name) user.name = name;
-    if (email) user.email = email;
     if (password) user.password = password;
     if (age) user.age = age;
     if (contact_no) user.contact_no = contact_no;

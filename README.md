@@ -98,7 +98,9 @@ MONGO_URI=<your_mongodb_connection_string>
 JWT_SECRET=<your_jwt_secret>
 GEMINI_API_KEY=<your_gemini_api_key>
 REACT_FRONTEND_URL=http://localhost:3000
+ENCRYPTION_KEY=<your_encryption_key>
 ```
+Ensure that the ENCRYPTION_KEY in your .env file is 32 bytes long (64 hex characters)
 
 ### Frontend `.env`
 ```
