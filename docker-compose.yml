@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: backend_container
+    build: .
+    ports:
+      - "5000:5000"  # Change based on your app's port
+    environment:
+      - NODE_ENV=production  # Example, modify as needed
+    restart: always
