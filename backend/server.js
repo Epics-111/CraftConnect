@@ -12,7 +12,7 @@ const userDetailsRoutes = require('./routes/userDetailsRoutes');
 const serviceRouter = require('./routes/serviceRouter');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Trust the proxy
 app.set('trust proxy', 1);
