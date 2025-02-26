@@ -13,8 +13,11 @@ const ServiceDetail = () => {
   useEffect(() => {
     const fetchServiceDetails = async () => {
       try {
-        const response = await axios.get(`/api/service/${id}`);
-        setService(response.data);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/services/service/${id}`);
+        const serviceData = response.data;
+        // Convert Decimal128 to string
+        serviceData.price = serviceData.price.$numberDecimal;
+        setService(serviceData);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -37,11 +40,11 @@ const ServiceDetail = () => {
     <div>
       <Header />
       <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-3xl font-semibold text-center">{service.name}</h2>
+        <h2 className="text-3xl font-semibold text-center">{service.title}</h2>
         <p className="mt-4 text-gray-600">{service.description}</p>
         <p className="mt-2 font-bold">Price: {service.price}</p>
-        <p className="mt-2">Provided by: {service.provider}</p>
-        <p className="mt-1">Contact: {service.contact}</p>
+        <p className="mt-2">Provided by: {service.provider_name}</p>
+        <p className="mt-1">Contact: {service.provider_contact}</p>
       </div>
       <Footer />
     </div>
