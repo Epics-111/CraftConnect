@@ -1,4 +1,4 @@
-const { User } = require("../models/User");
+const User = require("../models/User");
 
 const saveUserDetails = async (req, res) => {
   const { name, email, password, age, contact_no, role, providerDetails, consumerDetails } = req.body;

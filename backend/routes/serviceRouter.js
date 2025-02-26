@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { Service } = require('../models/User');
+const Service = require('../models/User');
 
 // Create a new service
-router.post('/service', async (req, res) => {
+router.post('/create', async (req, res) => {
   try {
     const newService = new Service(req.body);
     const savedService = await newService.save();
@@ -14,7 +14,7 @@ router.post('/service', async (req, res) => {
 });
 
 // Update a service by ID
-router.put('/service/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
   try {
     const updatedService = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedService) {
@@ -27,7 +27,7 @@ router.put('/service/:id', async (req, res) => {
 });
 
 // Get service details by ID
-router.get('/service/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
     if (!service) {
