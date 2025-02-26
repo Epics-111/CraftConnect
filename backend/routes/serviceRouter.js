@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Service } = require('../models/User');
+
 // Create a new service
 router.post('/service', async (req, res) => {
   try {
@@ -33,6 +34,16 @@ router.get('/service/:id', async (req, res) => {
       return res.status(404).json({ message: 'Service not found' });
     }
     res.json(service);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get all services
+router.get('/all', async (req, res) => {
+  try {
+    const services = await Service.find();
+    res.json(services);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
