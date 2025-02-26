@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Service = require('../models/User');
+const Service = require('../models/Service');
 
 // Create a new service
 router.post('/create', async (req, res) => {
@@ -25,7 +25,15 @@ router.put('/update/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
+// Get all services
+router.get('/all', async (req, res) => {
+  try {
+    const services = await Service.find();
+    res.json(services);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 // Get service details by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -39,14 +47,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Get all services
-router.get('/all', async (req, res) => {
-  try {
-    const services = await Service.find();
-    res.json(services);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+
 
 module.exports = router;
