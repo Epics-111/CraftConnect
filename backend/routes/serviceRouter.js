@@ -27,7 +27,7 @@ router.put('/update/:id', async (req, res) => {
 });
 
 // Get service details by ID
-router.get('/:id', async (req, res) => {
+router.get('/service/:id', async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
     if (!service) {
