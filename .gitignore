@@ -1,5 +1,24 @@
-backend/node_modules/
-frontend/node_modules/
-backend/.env
-frontend/.env
-flask_auth/.env
+# Ignore node_modules
+node_modules/
+
+# Ignore environment variables
+.env
+
+# Ignore logs and cache
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore build files
+build/
+dist/
+
+# Ignore SSH keys
+craftconnect.pem
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+

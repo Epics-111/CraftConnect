@@ -1,0 +1,30 @@
+name: Deploy Backend to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up SSH Key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+      - name: Deploy to EC2
+        run: |
+          scp -i private_key.pem -r backend ubuntu@${{ secrets.EC2_HOST }}:~/backend
+          ssh -i private_key.pem ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+            cd ~/backend
+            npm install
+            pm2 stop all || true
+            pm2 start server.js --name craftconnect-backend
+          EOF
+
