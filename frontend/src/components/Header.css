@@ -11,11 +11,19 @@
 }
 
 .logo a {
+  display: flex;
+  align-items: center;
   font-size: 1.8em;
   font-weight: 600;
   text-decoration: none;
   color: white;
   transition: transform 0.3s ease;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
 }
 
 .logo a:hover {

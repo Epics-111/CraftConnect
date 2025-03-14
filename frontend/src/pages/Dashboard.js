@@ -11,6 +11,7 @@ const services = [
   { name: "Electrician", image: "https://i.pinimg.com/736x/0f/db/ce/0fdbce72cbb55ba6c87495876d70f37e.jpg" },
   { name: "House Cleaning", image: "https://cdn5.vectorstock.com/i/1000x1000/44/69/man-male-cleaning-service-house-office-cleaner-vector-8294469.jpg" },
   { name: "Babysitting", image: "https://cdn.vectorstock.com/i/1000v/18/73/babysitter-cartoon-vector-44781873.jpg" },
+  { name: "Painting", image: "https://www.shutterstock.com/image-vector/wall-painter-vector-worker-work-260nw-720756157.jpg" }
 ];
 
 const Dashboard = () => {
