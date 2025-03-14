@@ -9,6 +9,8 @@ import ServiceDetails from "./pages/ServiceDetails";
 import ProtectedRoute from './components/ProtectedRoute';
 import UserDetails from "./pages/UserDetails";
 import Reviews from "./pages/Reviews";
+import ServiceListByTitle from "./pages/ServiceListByTitle";
+import SearchResults from "./pages/SearchResults";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/user-details" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
           <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
           <Route path="/service/:id" element={<ProtectedRoute><ServiceDetails /></ProtectedRoute>} />
+          <Route path="/services/title/:title" element={<ProtectedRoute><ServiceListByTitle /></ProtectedRoute>} />
+          <Route path="/search/:query" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
           <Route path="/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>

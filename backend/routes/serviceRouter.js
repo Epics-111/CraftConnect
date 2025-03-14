@@ -47,6 +47,16 @@ router.get('/service/:id', async (req, res) => {
   }
 });
 
+// Filter and Get services by name
+router.get('/service/title/:title', async (req, res) => {
+  try {
+    const services = await Service.find({ title: { $regex: req.params.title, $options: 'i' } });
+    res.json(services);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 
 module.exports = router;
