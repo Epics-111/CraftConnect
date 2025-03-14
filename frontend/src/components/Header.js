@@ -14,7 +14,10 @@ const Header = () => {
   return (
     <header className="header">
       <div className="logo">
-        <a href="/dashboard">CraftConnect</a>
+        <a href="/dashboard">
+          <img src="/icon.jpg" alt="CraftConnect Logo" className="logo-icon" />
+          CraftConnect
+        </a>
       </div>
       <nav className="nav">
         <ul>
