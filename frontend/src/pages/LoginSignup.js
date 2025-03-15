@@ -41,7 +41,10 @@ const LoginSignup = () => {
     <div className="login-signup-container">
       <div className="background-illustration"></div>
       <div className="form-container">
-        <h1>Craft Connect</h1>
+        <h1>
+          <img src="/icon.jpg" alt="CraftConnect Logo" className="login-icon" />
+          Craft Connect
+        </h1>
         <form onSubmit={handleSubmit}>
           <input
             type="email"

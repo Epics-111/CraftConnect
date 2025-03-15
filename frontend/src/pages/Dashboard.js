@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Chatbot from "../components/Chatbot";
@@ -11,9 +11,19 @@ const services = [
   { name: "Electrician", image: "https://i.pinimg.com/736x/0f/db/ce/0fdbce72cbb55ba6c87495876d70f37e.jpg" },
   { name: "House Cleaning", image: "https://cdn5.vectorstock.com/i/1000x1000/44/69/man-male-cleaning-service-house-office-cleaner-vector-8294469.jpg" },
   { name: "Babysitting", image: "https://cdn.vectorstock.com/i/1000v/18/73/babysitter-cartoon-vector-44781873.jpg" },
+  { name: "Painting", image: "https://www.shutterstock.com/image-vector/wall-painter-vector-worker-work-260nw-720756157.jpg" }
 ];
 
 const Dashboard = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search/${searchQuery}`);
+    }
+  };
+
   return (
     <div className="dashboard-container min-h-screen bg-gray-100">
       <Header />
@@ -29,8 +39,14 @@ const Dashboard = () => {
 
       {/* Search Bar */}
       <div className="search-container max-w-2xl mx-auto my-8 p-4 bg-white shadow-lg rounded-lg">
-        <input type="text" placeholder="Search for services..." className="search-input" />
-        <button className="search-btn">Search</button>
+        <input
+          type="text"
+          placeholder="Search for services..."
+          className="search-input"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button className="search-btn" onClick={handleSearch}>Search</button>
       </div>
 
       {/* Featured Services */}
@@ -39,10 +55,15 @@ const Dashboard = () => {
         <div className="service-grid">
           {services.map((service, index) => (
             <Link to={`/services/title/${service.name}`} key={index} className="service-card">
+<<<<<<< HEAD
               <div className="service-card-inner">
                 <img src={service.image} alt={service.name} className="service-img" />
                 <h3 className="service-name">{service.name}</h3>
               </div>
+=======
+              <img src={service.image} alt={service.name} className="service-img" />
+              <h3 className="service-name">{service.name}</h3>
+>>>>>>> refs/remotes/origin/main
             </Link>
           ))}
         </div>
