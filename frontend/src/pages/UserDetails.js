@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { apiRequest } from "../api";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import SkeletonLoader from "../components/SkeletonLoader";
 import { FaUser, FaEnvelope, FaLock, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaTools, FaBriefcase, FaDollarSign } from "react-icons/fa";
 import "./UserDetails.css";
 
@@ -25,27 +26,58 @@ const UserDetails = () => {
       setLoading(true);
       try {
         const user = JSON.parse(localStorage.getItem("user"));
+        console.log("Loading user data from localStorage:", user);
         
         if (user) {
+          // Handle basic user information
           setName(user.name || "");
           setEmail(user.email || "");
-          setPassword(user.password || "");
-          setAge(user.age || "");
-          setContactNo(user.contact_no || "");
+          setAge(user.age ? user.age.toString() : "");
+          
+          // Handle contact_no with various possible formats
+          if (user.contact_no) {
+            setContactNo(user.contact_no.toString());
+          } else if (user.contactNo) {
+            setContactNo(user.contactNo.toString());
+          } else {
+            setContactNo("");
+          }
+          
+          // Set role with fallback
           setRole(user.role || "consumer");
           
-          if (user.role === "provider" && user.providerDetails) {
-            setServiceType(user.providerDetails.serviceType || "");
-            setExperience(user.providerDetails.experience || "");
-            setHourlyRate(user.providerDetails.hourlyRate || "");
-          } else if (user.role === "consumer" && user.consumerDetails) {
-            setAddress(user.consumerDetails.address || "");
+          // Handle provider details with multiple possible structures
+          if (user.role === "provider") {
+            const providerData = user.providerDetails || {};
+            
+            setServiceType(providerData.serviceType || "");
+            
+            // Handle experience field with possible number or string
+            if (providerData.experience) {
+              setExperience(providerData.experience.toString());
+            } else {
+              setExperience("");
+            }
+            
+            // Handle hourlyRate with multiple possible formats
+            if (providerData.hourlyRate && providerData.hourlyRate.$numberDecimal) {
+              setHourlyRate(providerData.hourlyRate.$numberDecimal);
+            } else if (providerData.hourlyRate) {
+              setHourlyRate(providerData.hourlyRate.toString());
+            } else {
+              setHourlyRate("");
+            }
+          } 
+          // Handle consumer details
+          else if (user.role === "consumer") {
+            const consumerData = user.consumerDetails || {};
+            setAddress(consumerData.address || "");
           }
         }
       } catch (error) {
         console.error("Error loading user data:", error);
       }
-      setLoading(false);
+      setTimeout(() => setLoading(false), 500);
     };
 
     loadUserData();
@@ -90,7 +122,29 @@ const UserDetails = () => {
       case 'email':
         setEmail(value);
         break;
-      // Handle other fields similarly
+      case 'password':
+        setPassword(value);
+        break;
+      case 'age':
+        setAge(value);
+        break;
+      case 'contactNo':
+        setContactNo(value);
+        break;
+      case 'address':
+        setAddress(value);
+        break;
+      case 'serviceType':
+        setServiceType(value);
+        break;
+      case 'experience':
+        setExperience(value);
+        break;
+      case 'hourlyRate':
+        setHourlyRate(value);
+        break;
+      default:
+        break;
     }
     
     // Validate the field
@@ -110,31 +164,59 @@ const UserDetails = () => {
     
     setSaveStatus("saving");
     
+    // Format the data properly
     const userDetails = {
       name,
       email,
       password,
-      age,
-      contact_no: contactNo,
+      age: age ? parseInt(age, 10) : undefined,
+      contact_no: contactNo ? parseInt(contactNo, 10) : undefined,
       role,
-      providerDetails: role === "provider" ? { serviceType, experience, hourlyRate } : undefined,
-      consumerDetails: role === "consumer" ? { address } : undefined,
+      providerDetails: role === "provider" ? { 
+        serviceType, 
+        experience: experience ? parseInt(experience, 10) : undefined, 
+        hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined 
+      } : undefined,
+      consumerDetails: role === "consumer" ? { 
+        address 
+      } : undefined,
     };
 
     try {
       // Save the response to a variable and use it
       const response = await apiRequest("/api/user-details/save-details", "POST", userDetails);
       
-      // Update local storage
+      // Update local storage with properly formatted data
       const currentUser = JSON.parse(localStorage.getItem("user")) || {};
+      
+      // Create a clean copy for localStorage
       const updatedUser = {
         ...currentUser,
-        ...userDetails,
-        providerDetails: role === "provider" ? userDetails.providerDetails : currentUser.providerDetails,
-        consumerDetails: role === "consumer" ? userDetails.consumerDetails : currentUser.consumerDetails
+        name,
+        email,
+        age: age ? parseInt(age, 10) : currentUser.age,
+        contact_no: contactNo ? parseInt(contactNo, 10) : currentUser.contact_no,
+        role,
       };
       
+      // Update nested objects carefully
+      if (role === "provider") {
+        updatedUser.providerDetails = {
+          ...(currentUser.providerDetails || {}),
+          serviceType,
+          experience: experience ? parseInt(experience, 10) : undefined,
+          hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined
+        };
+      } else if (role === "consumer") {
+        updatedUser.consumerDetails = {
+          ...(currentUser.consumerDetails || {}),
+          address
+        };
+      }
+      
       localStorage.setItem("user", JSON.stringify(updatedUser));
+      console.log("Updated user data in localStorage:", updatedUser);
+      
       setSaveStatus("success");
       
       // Display the success message from the API if available
@@ -154,10 +236,7 @@ const UserDetails = () => {
     return (
       <>
         <Header />
-        <div className="loading-container">
-          <div className="loader"></div>
-          <p>Loading your profile...</p>
-        </div>
+        <SkeletonLoader type="profile" />
         <Footer />
       </>
     );
@@ -271,8 +350,9 @@ const UserDetails = () => {
                 </label>
                 <textarea
                   id="address"
+                  name="address"
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="Enter your full address"
                   rows="3"
                 ></textarea>
@@ -290,9 +370,10 @@ const UserDetails = () => {
                 </label>
                 <input
                   id="serviceType"
+                  name="serviceType"
                   type="text"
                   value={serviceType}
-                  onChange={(e) => setServiceType(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="E.g., Plumbing, Electrical, Cleaning"
                 />
               </div>
@@ -303,9 +384,10 @@ const UserDetails = () => {
                 </label>
                 <input
                   id="experience"
+                  name="experience"
                   type="number"
                   value={experience}
-                  onChange={(e) => setExperience(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="Years of experience"
                 />
               </div>
@@ -316,9 +398,10 @@ const UserDetails = () => {
                 </label>
                 <input
                   id="hourlyRate"
+                  name="hourlyRate"
                   type="number"
                   value={hourlyRate}
-                  onChange={(e) => setHourlyRate(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="Your hourly rate"
                 />
               </div>

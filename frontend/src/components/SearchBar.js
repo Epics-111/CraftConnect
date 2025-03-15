@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
+import './SearchBar.css';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -8,8 +9,21 @@ const SearchBar = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const navigate = useNavigate();
   const suggestionRef = useRef(null);
+  const inputRef = useRef(null);
 
-  const popularServices = ['Plumbing', 'Electrician', 'House Cleaning', 'Babysitting', 'Painting'];
+  // Use useMemo to memoize the popularServices array
+  const popularServices = useMemo(() => [
+    'Plumbing', 
+    'Electrician', 
+    'House Cleaning', 
+    'Babysitting', 
+    'Painting',
+    'Gardening',
+    'Carpentry',
+    'Computer Repair',
+    'Pet Care',
+    'Moving Service'
+  ], []); // Empty dependency array means this will only be created once
 
   useEffect(() => {
     if (query.trim()) {
@@ -20,7 +34,7 @@ const SearchBar = () => {
     } else {
       setSuggestions([]);
     }
-  }, [query]);
+  }, [query, popularServices]); // popularServices is now memoized, so it won't trigger re-renders
 
   const handleSearch = () => {
     if (query.trim()) {
@@ -35,54 +49,67 @@ const SearchBar = () => {
     setShowSuggestions(false);
   };
 
+  const handleInputFocus = () => {
+    setShowSuggestions(true);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
+      if (suggestionRef.current && !suggestionRef.current.contains(event.target) &&
+          inputRef.current && !inputRef.current.contains(event.target)) {
         setShowSuggestions(false);
       }
     };
+    
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-return (
-    <div className="search-container relative w-full max-w-4xl mx-auto my-8 p-4 bg-white shadow-lg rounded-lg">
-        <div className="flex items-center">
-            <input
-                type="text"
-                placeholder="Search for services..."
-                className="search-input w-full flex-grow mr-2"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setShowSuggestions(true)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-            />
-            <button className="search-btn flex items-center justify-center whitespace-nowrap" onClick={handleSearch}>
-                <FaSearch className="mr-2" /> Search
-            </button>
-        </div>
-        
-        {showSuggestions && suggestions.length > 0 && (
+  return (
+    <div className="search-container">
+      <div className="search-inner">
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Search for services..."
+          className="search-input"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={handleInputFocus}
+          onKeyPress={handleKeyPress}
+        />
+        <button className="search-btn" onClick={handleSearch}>
+          <FaSearch /> <span>Search</span>
+        </button>
+      </div>
+      
+      {showSuggestions && suggestions.length > 0 && (
+        <div 
+          ref={suggestionRef}
+          className="suggestions-dropdown"
+        >
+          {suggestions.map((suggestion, index) => (
             <div 
-                ref={suggestionRef}
-                className="suggestions-dropdown absolute left-0 right-0 bg-white mt-2 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto"
+              key={index} 
+              className="suggestion-item"
+              onClick={() => handleSuggestionClick(suggestion)}
             >
-                {suggestions.map((suggestion, index) => (
-                    <div 
-                        key={index} 
-                        className="suggestion-item p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                        <FaSearch className="inline mr-2 text-gray-400" /> 
-                        {suggestion}
-                    </div>
-                ))}
+              <FaSearch className="suggestion-icon" /> 
+              {suggestion}
             </div>
-        )}
+          ))}
+        </div>
+      )}
     </div>
-);
+  );
 };
 
 export default SearchBar;

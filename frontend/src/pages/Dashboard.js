@@ -32,9 +32,9 @@ const Dashboard = () => {
       <SearchBar />
 
       {/* Featured Services */}
-      <section className="max-w-6xl mx-auto my-10">
-        <h2 className="text-4xl font-bold text-center text-gray-800">Popular Services</h2>
-        <div className="service-grid">
+      <section className="max-w-6xl mx-auto px-4 my-16">
+        <h2 className="section-title text-4xl font-bold text-center text-gray-800 mb-8">Popular Services</h2>
+        <div className="service-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {services.map((service, index) => (
             <Link to={`/services/title/${service.name}`} key={index} className="service-card">
               <div className="service-card-inner">

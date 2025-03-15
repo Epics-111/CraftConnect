@@ -158,6 +158,11 @@
   outline: none;
 }
 
+.form-group input:valid:not(:placeholder-shown) {
+  border-color: #10b981;
+  background-color: rgba(240, 253, 244, 0.2);
+}
+
 .save-section {
   margin-top: 30px;
   text-align: center;
