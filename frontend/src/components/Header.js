@@ -1,14 +1,19 @@
 // src/components/Header.js
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../auth";
 import "./Header.css";
 
 const Header = () => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout(navigate);
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   return (
@@ -19,9 +24,16 @@ const Header = () => {
           CraftConnect
         </a>
       </div>
-      <nav className="nav">
+      
+      <div className="menu-toggle" onClick={toggleMenu}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      
+      <nav className={`nav ${menuOpen ? 'open' : ''}`}>
         <ul>
-          <li><a href="/user-details">Profile</a></li>
+          <li><a href="/user-details" onClick={() => setMenuOpen(false)}>Profile</a></li>
           <li><button className="logout-button" onClick={handleLogout}>Logout</button></li>
         </ul>
       </nav>

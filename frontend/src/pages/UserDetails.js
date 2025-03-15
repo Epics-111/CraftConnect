@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { apiRequest } from "../api";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { FaUser, FaEnvelope, FaLock, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaTools, FaBriefcase, FaDollarSign } from "react-icons/fa";
+import "./UserDetails.css";
 
 const UserDetails = () => {
   const [loading, setLoading] = useState(true);
@@ -15,28 +17,33 @@ const UserDetails = () => {
   const [serviceType, setServiceType] = useState("");
   const [experience, setExperience] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
+  const [saveStatus, setSaveStatus] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const loadUserData = () => {
       setLoading(true);
-      const user = JSON.parse(localStorage.getItem("user"));
-      
-      if (user) {
-        console.log("User data from localStorage:", user); // Debugging
-        setName(user.name || "");
-        setEmail(user.email || "");
-        setPassword(user.password || "");
-        setAge(user.age || "");
-        setContactNo(user.contact_no || "");
-        setRole(user.role || "consumer");
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
         
-        if (user.role === "provider" && user.providerDetails) {
-          setServiceType(user.providerDetails.serviceType || "");
-          setExperience(user.providerDetails.experience || "");
-          setHourlyRate(user.providerDetails.hourlyRate || "");
-        } else if (user.role === "consumer" && user.consumerDetails) {
-          setAddress(user.consumerDetails.address || "");
+        if (user) {
+          setName(user.name || "");
+          setEmail(user.email || "");
+          setPassword(user.password || "");
+          setAge(user.age || "");
+          setContactNo(user.contact_no || "");
+          setRole(user.role || "consumer");
+          
+          if (user.role === "provider" && user.providerDetails) {
+            setServiceType(user.providerDetails.serviceType || "");
+            setExperience(user.providerDetails.experience || "");
+            setHourlyRate(user.providerDetails.hourlyRate || "");
+          } else if (user.role === "consumer" && user.consumerDetails) {
+            setAddress(user.consumerDetails.address || "");
+          }
         }
+      } catch (error) {
+        console.error("Error loading user data:", error);
       }
       setLoading(false);
     };
@@ -44,7 +51,65 @@ const UserDetails = () => {
     loadUserData();
   }, []);
 
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'name':
+        return value.trim() ? '' : 'Name is required';
+      case 'email':
+        return /\S+@\S+\.\S+/.test(value) ? '' : 'Please enter a valid email';
+      case 'age':
+        return value && !isNaN(value) && value > 0 ? '' : 'Please enter a valid age';
+      case 'contactNo':
+        return value && /^\d{10}$/.test(value.toString()) ? '' : 'Please enter a valid 10-digit number';
+      default:
+        return '';
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (email && !/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
+    
+    // Add more validation rules as needed
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Update the field value
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      // Handle other fields similarly
+    }
+    
+    // Validate the field
+    const error = validateField(name, value);
+    setErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
+  };
+
   const handleSaveDetails = async () => {
+    if (!validateForm()) {
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus(null), 3000);
+      return;
+    }
+    
+    setSaveStatus("saving");
+    
     const userDetails = {
       name,
       email,
@@ -57,14 +122,31 @@ const UserDetails = () => {
     };
 
     try {
-      const data = await apiRequest("/api/user-details/save-details", "POST", userDetails);
-      alert(data.message);
+      // Save the response to a variable and use it
+      const response = await apiRequest("/api/user-details/save-details", "POST", userDetails);
       
-      // Update the local storage with new data
-      const updatedUser = {...JSON.parse(localStorage.getItem("user")), ...userDetails};
+      // Update local storage
+      const currentUser = JSON.parse(localStorage.getItem("user")) || {};
+      const updatedUser = {
+        ...currentUser,
+        ...userDetails,
+        providerDetails: role === "provider" ? userDetails.providerDetails : currentUser.providerDetails,
+        consumerDetails: role === "consumer" ? userDetails.consumerDetails : currentUser.consumerDetails
+      };
+      
       localStorage.setItem("user", JSON.stringify(updatedUser));
+      setSaveStatus("success");
+      
+      // Display the success message from the API if available
+      if (response?.message) {
+        console.log("API success:", response.message);
+      }
+      
+      setTimeout(() => setSaveStatus(null), 3000);
     } catch (error) {
-      alert("Error saving details: " + error.message);
+      console.error("Error saving details:", error);
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus(null), 3000);
     }
   };
 
@@ -72,8 +154,9 @@ const UserDetails = () => {
     return (
       <>
         <Header />
-        <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px", textAlign: "center" }}>
-          Loading user data...
+        <div className="loading-container">
+          <div className="loader"></div>
+          <p>Loading your profile...</p>
         </div>
         <Footer />
       </>
@@ -83,135 +166,178 @@ const UserDetails = () => {
   return (
     <>
       <Header />
-      <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px", background: "#fff", boxShadow: "0 5px 10px rgba(0, 0, 0, 0.15)", borderRadius: "10px" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "20px", fontSize: "24px", fontWeight: "bold" }}>Profile</h2>
-        <form>
-          <div style={{ marginBottom: "15px" }}>
-            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Role</label>
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  value="consumer"
-                  checked={role === "consumer"}
-                  onChange={() => setRole("consumer")}
-                />
-                Consumer
+      <div className="user-profile-container">
+        <div className="profile-header">
+          <div className="profile-avatar">
+            {name ? name.charAt(0).toUpperCase() : "U"}
+          </div>
+          <h1>Your Profile</h1>
+          <p>Manage your personal information and service preferences</p>
+        </div>
+        
+        <div className="profile-tabs">
+          <div className={`tab ${role === "consumer" ? "active" : ""}`} onClick={() => setRole("consumer")}>
+            Consumer Profile
+          </div>
+          <div className={`tab ${role === "provider" ? "active" : ""}`} onClick={() => setRole("provider")}>
+            Service Provider Profile
+          </div>
+        </div>
+        
+        <div className="profile-form-container">
+          <div className="form-section">
+            <h2>Personal Information</h2>
+            
+            <div className="form-group">
+              <label htmlFor="name">
+                <FaUser className="input-icon" /> Full Name
               </label>
-              <label style={{ marginLeft: "20px" }}>
-                <input
-                  type="radio"
-                  value="provider"
-                  checked={role === "provider"}
-                  onChange={() => setRole("provider")}
-                />
-                Service Provider
-              </label>
-            </div>
-          </div>
-          <div style={{ marginBottom: "15px" }}>
-            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
-            />
-          </div>
-          <div style={{ marginBottom: "15px" }}>
-            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
-            />
-          </div>
-          <div style={{ marginBottom: "15px" }}>
-            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
-            />
-          </div>
-          <div style={{ marginBottom: "15px" }}>
-            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Age</label>
-            <input
-              type="number"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              required
-              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
-            />
-          </div>
-          <div style={{ marginBottom: "15px" }}>
-            <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Contact Number</label>
-            <input
-              type="text"
-              value={contactNo}
-              onChange={(e) => setContactNo(e.target.value)}
-              required
-              style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
-            />
-          </div>
-          {role === "consumer" && (
-            <div style={{ marginBottom: "15px" }}>
-              <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Address</label>
               <input
+                id="name"
+                name="name"
                 type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-                style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+                value={name}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                className={`${errors.name ? 'error' : ''}`}
+              />
+              {errors.name && <p className="error-message">{errors.name}</p>}
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="email">
+                <FaEnvelope className="input-icon" /> Email Address
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+              />
+              {errors.email && <p className="error-message">{errors.email}</p>}
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="password">
+                <FaLock className="input-icon" /> Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Update your password"
               />
             </div>
+            
+            <div className="form-group">
+              <label htmlFor="age">
+                <FaBirthdayCake className="input-icon" /> Age
+              </label>
+              <input
+                id="age"
+                type="number"
+                name="age"
+                value={age}
+                onChange={handleInputChange}
+                placeholder="Enter your age"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="contactNo">
+                <FaPhone className="input-icon" /> Contact Number
+              </label>
+              <input
+                id="contactNo"
+                type="text"
+                name="contactNo"
+                value={contactNo}
+                onChange={handleInputChange}
+                placeholder="Enter your contact number"
+              />
+            </div>
+          </div>
+          
+          {role === "consumer" && (
+            <div className="form-section">
+              <h2>Consumer Details</h2>
+              
+              <div className="form-group">
+                <label htmlFor="address">
+                  <FaMapMarkerAlt className="input-icon" /> Address
+                </label>
+                <textarea
+                  id="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Enter your full address"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
           )}
+          
           {role === "provider" && (
-            <>
-              <div style={{ marginBottom: "15px" }}>
-                <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Service Type</label>
+            <div className="form-section">
+              <h2>Service Provider Details</h2>
+              
+              <div className="form-group">
+                <label htmlFor="serviceType">
+                  <FaTools className="input-icon" /> Service Type
+                </label>
                 <input
+                  id="serviceType"
                   type="text"
                   value={serviceType}
                   onChange={(e) => setServiceType(e.target.value)}
-                  required
-                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+                  placeholder="E.g., Plumbing, Electrical, Cleaning"
                 />
               </div>
-              <div style={{ marginBottom: "15px" }}>
-                <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Experience (years)</label>
+              
+              <div className="form-group">
+                <label htmlFor="experience">
+                  <FaBriefcase className="input-icon" /> Experience (years)
+                </label>
                 <input
+                  id="experience"
                   type="number"
                   value={experience}
                   onChange={(e) => setExperience(e.target.value)}
-                  required
-                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+                  placeholder="Years of experience"
                 />
               </div>
-              <div style={{ marginBottom: "15px" }}>
-                <label style={{ display: "block", fontWeight: "500", marginBottom: "5px" }}>Hourly Rate</label>
+              
+              <div className="form-group">
+                <label htmlFor="hourlyRate">
+                  <FaDollarSign className="input-icon" /> Hourly Rate
+                </label>
                 <input
+                  id="hourlyRate"
                   type="number"
                   value={hourlyRate}
                   onChange={(e) => setHourlyRate(e.target.value)}
-                  required
-                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", fontSize: "16px" }}
+                  placeholder="Your hourly rate"
                 />
               </div>
-            </>
+            </div>
           )}
-          <button 
-            type="button" 
-            onClick={handleSaveDetails} 
-            style={{ width: "100%", padding: "10px", background: "#007bff", color: "#fff", border: "none", borderRadius: "5px", fontSize: "18px", cursor: "pointer" }}>
-            Save Details
-          </button>
-        </form>
+          
+          <div className="save-section">
+            <button 
+              className={`save-button ${saveStatus ? saveStatus : ""}`} 
+              onClick={handleSaveDetails}
+              disabled={saveStatus === "saving"}
+            >
+              {saveStatus === "saving" ? "Saving..." : 
+               saveStatus === "success" ? "Saved Successfully!" : 
+               saveStatus === "error" ? "Error Saving" : 
+               "Save Profile"}
+            </button>
+          </div>
+        </div>
       </div>
       <Footer />
     </>

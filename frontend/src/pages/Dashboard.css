@@ -154,3 +154,44 @@
   .chatbot-widget {
     z-index: 1000 !important; /* Ensure chatbot is above other elements */
   }
+
+  /* Add these new styles */
+  .section-title {
+    position: relative;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+  }
+  
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, #4f46e5, #6C63FF);
+    border-radius: 2px;
+  }
+  
+  .dashboard-section {
+    padding: 5rem 0;
+    position: relative;
+  }
+  
+  .dashboard-section:nth-child(even) {
+    background-color: #f9fafb;
+  }
+  
+  .section-introduction {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    text-align: center;
+    line-height: 1.6;
+    color: #4b5563;
+    font-size: 1.125rem;
+  }

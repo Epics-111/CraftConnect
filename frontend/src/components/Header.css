@@ -69,3 +69,64 @@
   background: linear-gradient(135deg, #ff4757, #ff1e1e);
   transform: scale(1.1);
 }
+
+/* Add these styles */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: white;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex;
+  }
+  
+  .nav {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #cf5d41, #6C63FF);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    z-index: 100;
+  }
+  
+  .nav.open {
+    max-height: 300px;
+  }
+  
+  .nav ul {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .nav ul li {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .nav ul li a,
+  .nav ul li button {
+    display: block;
+    padding: 15px;
+    width: 100%;
+    border-radius: 0;
+  }
+}

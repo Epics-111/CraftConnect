@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import Chatbot from "../components/Chatbot";
+import SearchBar from "../components/SearchBar";
 import { FaUsers, FaTools, FaCheckCircle } from "react-icons/fa";
 import "./Dashboard.css";
 
@@ -15,15 +15,6 @@ const services = [
 ];
 
 const Dashboard = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
-
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/search/${searchQuery}`);
-    }
-  };
-
   return (
     <div className="dashboard-container min-h-screen bg-gray-100">
       <Header />
@@ -38,16 +29,7 @@ const Dashboard = () => {
       </section>
 
       {/* Search Bar */}
-      <div className="search-container max-w-2xl mx-auto my-8 p-4 bg-white shadow-lg rounded-lg">
-        <input
-          type="text"
-          placeholder="Search for services..."
-          className="search-input"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button className="search-btn" onClick={handleSearch}>Search</button>
-      </div>
+      <SearchBar />
 
       {/* Featured Services */}
       <section className="max-w-6xl mx-auto my-10">
@@ -55,15 +37,10 @@ const Dashboard = () => {
         <div className="service-grid">
           {services.map((service, index) => (
             <Link to={`/services/title/${service.name}`} key={index} className="service-card">
-<<<<<<< HEAD
               <div className="service-card-inner">
                 <img src={service.image} alt={service.name} className="service-img" />
                 <h3 className="service-name">{service.name}</h3>
               </div>
-=======
-              <img src={service.image} alt={service.name} className="service-img" />
-              <h3 className="service-name">{service.name}</h3>
->>>>>>> refs/remotes/origin/main
             </Link>
           ))}
         </div>
@@ -111,9 +88,6 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-
-      {/* Chatbot */}
-      <Chatbot />
 
       <Footer />
     </div>

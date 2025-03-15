@@ -11,23 +11,23 @@ import UserDetails from "./pages/UserDetails";
 import Reviews from "./pages/Reviews";
 import ServiceListByTitle from "./pages/ServiceListByTitle";
 import SearchResults from "./pages/SearchResults";
+import ChatbotWidget from "./components/ChatbotWidget";
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<LoginSignup />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/user-details" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
-          <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
-          <Route path="/service/:id" element={<ProtectedRoute><ServiceDetails /></ProtectedRoute>} />
-          <Route path="/services/title/:title" element={<ProtectedRoute><ServiceListByTitle /></ProtectedRoute>} />
-          <Route path="/search/:query" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
-          <Route path="/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<LoginSignup />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/user-details" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
+        <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
+        <Route path="/service/:id" element={<ProtectedRoute><ServiceDetails /></ProtectedRoute>} />
+        <Route path="/services/title/:title" element={<ProtectedRoute><ServiceListByTitle /></ProtectedRoute>} />
+        <Route path="/search/:query" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
+        <Route path="/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <ChatbotWidget />
     </Router>
   );
 }
