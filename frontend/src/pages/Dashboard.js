@@ -38,9 +38,11 @@ const Dashboard = () => {
         <h2 className="text-4xl font-bold text-center text-gray-800">Popular Services</h2>
         <div className="service-grid">
           {services.map((service, index) => (
-            <Link to={`/service/${index + 1}`} key={index} className="service-card">
-              <img src={service.image} alt={service.name} className="service-img" />
-              <h3 className="service-name">{service.name}</h3>
+            <Link to={`/services/title/${service.name}`} key={index} className="service-card">
+              <div className="service-card-inner">
+                <img src={service.image} alt={service.name} className="service-img" />
+                <h3 className="service-name">{service.name}</h3>
+              </div>
             </Link>
           ))}
         </div>

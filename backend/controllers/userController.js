@@ -41,12 +41,29 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    // email hash from the provided email
     const emailHash = crypto.createHash("sha256").update(email).digest("hex");
     const user = await User.findOne({ emailHash });
+    
     if (user && user.password === password) {
-      const token = generateToken(user);
-      res.status(200).json({ message: "Login successful", token });
+      const token = generateToken(user._id);
+      
+      // Create a user object without sensitive information
+      const userData = {
+        _id: user._id,
+        email: email, // Use original email since it's hashed in DB
+        name: user.name || '',
+        role: user.role || 'consumer',
+        age: user.age || '',
+        contact_no: user.contact_no || '',
+        providerDetails: user.providerDetails || {},
+        consumerDetails: user.consumerDetails || {}
+      };
+      
+      res.status(200).json({
+        message: "Login successful",
+        token,
+        user: userData
+      });
     } else {
       res.status(401).json({ error: "Invalid credentials" });
     }

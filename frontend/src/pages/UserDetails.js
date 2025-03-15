@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { apiRequest } from "../api";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const UserDetails = () => {
+  const [loading, setLoading] = useState(true);
   const [role, setRole] = useState("consumer");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,6 +15,34 @@ const UserDetails = () => {
   const [serviceType, setServiceType] = useState("");
   const [experience, setExperience] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
+
+  useEffect(() => {
+    const loadUserData = () => {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      if (user) {
+        console.log("User data from localStorage:", user); // Debugging
+        setName(user.name || "");
+        setEmail(user.email || "");
+        setPassword(user.password || "");
+        setAge(user.age || "");
+        setContactNo(user.contact_no || "");
+        setRole(user.role || "consumer");
+        
+        if (user.role === "provider" && user.providerDetails) {
+          setServiceType(user.providerDetails.serviceType || "");
+          setExperience(user.providerDetails.experience || "");
+          setHourlyRate(user.providerDetails.hourlyRate || "");
+        } else if (user.role === "consumer" && user.consumerDetails) {
+          setAddress(user.consumerDetails.address || "");
+        }
+      }
+      setLoading(false);
+    };
+
+    loadUserData();
+  }, []);
 
   const handleSaveDetails = async () => {
     const userDetails = {
@@ -30,10 +59,26 @@ const UserDetails = () => {
     try {
       const data = await apiRequest("/api/user-details/save-details", "POST", userDetails);
       alert(data.message);
+      
+      // Update the local storage with new data
+      const updatedUser = {...JSON.parse(localStorage.getItem("user")), ...userDetails};
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     } catch (error) {
       alert("Error saving details: " + error.message);
     }
   };
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px", textAlign: "center" }}>
+          Loading user data...
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

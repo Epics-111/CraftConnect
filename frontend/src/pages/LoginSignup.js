@@ -18,8 +18,19 @@ const LoginSignup = () => {
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
+    console.log("Response data:", data);
+    
     if (response.ok) {
       localStorage.setItem("token", data.token);
+      
+      // Create a basic user object if data.user is undefined
+      const userData = data.user || { 
+        email: email,
+        role: "consumer" // Default role
+      };
+      
+      localStorage.setItem("user", JSON.stringify(userData));
+      console.log("Stored user data:", userData);
       navigate("/dashboard");
     } else {
       alert(data.error);
