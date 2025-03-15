@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
 
 const ServiceDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,6 +36,8 @@ const ServiceDetail = () => {
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("API URL:", process.env.REACT_APP_API_URL);
+      
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/bookings/create`, {
         service: id,
         ...bookingData
@@ -47,6 +48,7 @@ const ServiceDetail = () => {
         setShowBookingForm(false);
       }
     } catch (err) {
+      console.error("Booking error:", err.response ? err.response.data : err.message);
       alert("Failed to create booking. Please try again.");
     }
   };

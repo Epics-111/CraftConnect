@@ -1,35 +1,42 @@
-/* src/pages/LoginSignup.css */
+/* Core layout */
 .login-signup-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background: linear-gradient(135deg, #cf5d41, #6C63FF);
+  padding: 0 15px;
 }
 
 .background-illustration {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: url("career-ladder.jpeg") no-repeat center center;
+  background: linear-gradient(135deg, rgba(207, 93, 65, 0.8), rgba(108, 99, 255, 0.8));
   opacity: 0.2;
+  z-index: 0;
 }
 
+/* Form container */
 .form-container {
   background: white;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
   z-index: 1;
+  width: 100%;
+  max-width: 400px;
 }
 
+/* Typography */
 .form-container h1 {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: #2A5CAA;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.8rem;
 }
 
 .login-icon {
@@ -38,26 +45,174 @@
   margin-right: 10px;
 }
 
+/* Form elements */
 .form-container input {
   width: 100%;
-  padding: 0.5rem;
-  margin: 0.5rem 0;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-container input:focus {
+  outline: none;
+  border-color: #2A5CAA;
+  box-shadow: 0 0 0 2px rgba(42, 92, 170, 0.2);
 }
 
 .form-container button {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.75rem;
   background: #FF7F50;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.form-container button:hover {
+  background: #e66a3e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 127, 80, 0.3);
+}
+
+.form-container button:active {
+  transform: translateY(0);
 }
 
 .form-container p {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   color: #2A5CAA;
   cursor: pointer;
+}
+
+.form-container p:hover {
+  text-decoration: underline;
+  color: #1a4a99;
+}
+
+/* Loading states */
+.loading-button {
+  opacity: 0.8;
+  cursor: not-allowed !important;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+.loading-text:after {
+  content: '.';
+  animation: dots 1.5s steps(5, end) infinite;
+}
+
+/* Message styles */
+.error-message, .success-message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  border-left: 4px solid #ef4444;
+  color: #b91c1c;
+}
+
+.success-message {
+  background-color: #d1fae5;
+  border-left: 4px solid #10b981;
+  color: #047857;
+}
+
+/* Validation */
+.invalid-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  border-color: #ef4444 !important;
+}
+
+/* Animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60% { content: '...'; }
+  80%, 100% { content: ''; }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* Media queries */
+@media (max-width: 576px) {
+  .form-container {
+    padding: 1.5rem;
+    width: 90%;
+  }
+  
+  .form-container h1 {
+    font-size: 1.5rem;
+  }
+  
+  .login-icon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .form-container {
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+  
+  .form-container h1 {
+    color: #60a5fa;
+  }
+  
+  .form-container input {
+    background: #374151;
+    border-color: #4b5563;
+    color: white;
+  }
+  
+  .form-container p {
+    color: #60a5fa;
+  }
+  
+  .error-message {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+  }
+  
+  .success-message {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+  }
 }

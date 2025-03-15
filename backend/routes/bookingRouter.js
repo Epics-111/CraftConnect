@@ -1,11 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
+const Service = require('../models/Service'); // Add this import
 
 // Create a new booking
 router.post('/create', async (req, res) => {
   try {
     const { service, client_name, client_email, booking_date } = req.body;
+    
+    // Validate that the service exists first
+    const serviceExists = await Service.findById(service);
+    if (!serviceExists) {
+      return res.status(404).json({ message: 'Service not found' });
+    }
     
     const newBooking = new Booking({
       service,
@@ -25,7 +32,7 @@ router.post('/create', async (req, res) => {
     res.status(201).json(savedBooking);
   } catch (error) {
     console.error('Booking creation error:', error);
-    res.status(500).json({ message: 'Failed to create booking' });
+    res.status(500).json({ message: 'Failed to create booking', error: error.message });
   }
 });
 
