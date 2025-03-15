@@ -1,8 +1,9 @@
 // src/components/Header.js
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { logout } from "../auth";
 import "./Header.css";
+import { FaHistory, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -19,10 +20,10 @@ const Header = () => {
   return (
     <header className="header">
       <div className="logo">
-        <a href="/dashboard">
+        <Link to="/dashboard">
           <img src="/icon.jpg" alt="CraftConnect Logo" className="logo-icon" />
           CraftConnect
-        </a>
+        </Link>
       </div>
       
       <div className="menu-toggle" onClick={toggleMenu}>
@@ -33,8 +34,21 @@ const Header = () => {
       
       <nav className={`nav ${menuOpen ? 'open' : ''}`}>
         <ul>
-          <li><a href="/user-details" onClick={() => setMenuOpen(false)}>Profile</a></li>
-          <li><button className="logout-button" onClick={handleLogout}>Logout</button></li>
+          <li>
+            <Link to="/user-details" onClick={() => setMenuOpen(false)}>
+              <FaUser className="nav-icon" /> Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="/booking-history" onClick={() => setMenuOpen(false)}>
+              <FaHistory className="nav-icon" /> Booking History
+            </Link>
+          </li>
+          <li>
+            <button className="logout-button" onClick={handleLogout}>
+              <FaSignOutAlt className="nav-icon" /> Logout
+            </button>
+          </li>
         </ul>
       </nav>
     </header>

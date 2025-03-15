@@ -46,4 +46,30 @@ router.get('/service/:serviceId', async (req, res) => {
   }
 });
 
+// Add this route to your existing bookingRouter.js
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const bookings = await Booking.find({ user: req.params.userId })
+      .populate('service')
+      .sort({ booking_date: -1 });
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching booking history' });
+  }
+});
+
+// Add route for canceling booking
+router.put('/:id/cancel', async (req, res) => {
+  try {
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      { status: 'Cancelled' },
+      { new: true }
+    );
+    res.json(booking);
+  } catch (error) {
+    res.status(500).json({ message: 'Error canceling booking' });
+  }
+});
+
 module.exports = router;
