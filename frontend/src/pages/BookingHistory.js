@@ -12,18 +12,27 @@ const BookingHistory = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || !userData.email) {
+          throw new Error('User email not found');
+        }
+
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/bookings/history`, 
           {
+            params: { client_email: userData.email },
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
             }
           }
         );
+        
         setBookings(response.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch booking history');
+        console.error('Error fetching bookings:', err);
+        setError(err.message || 'Failed to fetch booking history');
         setLoading(false);
       }
     };
