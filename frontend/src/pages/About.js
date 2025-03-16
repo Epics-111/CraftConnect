@@ -59,17 +59,17 @@ const About = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="team-member text-center">
                 <div className="w-32 h-32 rounded-full bg-gray-300 mx-auto mb-4"></div>
-                <h3 className="text-xl font-semibold">John Smith</h3>
+                <h3 className="text-xl font-semibold">Mohammad Ammar</h3>
                 <p className="text-indigo-600">CEO & Founder</p>
               </div>
               <div className="team-member text-center">
                 <div className="w-32 h-32 rounded-full bg-gray-300 mx-auto mb-4"></div>
-                <h3 className="text-xl font-semibold">Emily Johnson</h3>
+                <h3 className="text-xl font-semibold">Simran</h3>
                 <p className="text-indigo-600">CTO</p>
               </div>
               <div className="team-member text-center">
                 <div className="w-32 h-32 rounded-full bg-gray-300 mx-auto mb-4"></div>
-                <h3 className="text-xl font-semibold">Michael Brown</h3>
+                <h3 className="text-xl font-semibold">Mansi</h3>
                 <p className="text-indigo-600">Head of Operations</p>
               </div>
             </div>
