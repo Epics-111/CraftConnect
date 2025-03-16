@@ -1,13 +1,28 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const BookingSchema = new mongoose.Schema({
-  service: { type: mongoose.Schema.Types.ObjectId, ref: "Service", required: true },
-  client_name: { type: String, required: true, maxlength: 100 },
-  client_email: { type: String, required: true, maxlength: 100 },
-  booking_date: { type: Date, required: true },
-  status: { type: String, default: "Pending", maxlength: 100 },
-  created_at: { type: Date, default: Date.now }
+const bookingSchema = new mongoose.Schema({
+  service: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Service',
+    required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  client_name: String,
+  client_email: String,
+  booking_date: Date,
+  status: {
+    type: String,
+    enum: ['Pending', 'Confirmed', 'Cancelled', 'Completed'],
+    default: 'Pending'
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-const Booking = mongoose.model("Booking", BookingSchema);
-module.exports = Booking;
+module.exports = mongoose.model('Booking', bookingSchema);
