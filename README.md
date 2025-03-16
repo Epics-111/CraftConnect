@@ -1,6 +1,6 @@
 # CraftConnect
 
-CraftConnect is a smart community service access platform designed to help users find reliable professionals for various services such as plumbing, electrical work, house cleaning, and babysitting. The platform also provides career guidance, job market analytics, and emotional intelligence resources.
+CraftConnect is a smart community service access platform designed to help users find reliable professionals for various services such as plumbing, electrical work, house cleaning, and babysitting..
 
 ---
 
@@ -21,7 +21,7 @@ CraftConnect is a smart community service access platform designed to help users
 ---
 
 ## Project Overview
-CraftConnect aims to connect users with service providers in their community. Users can browse available services, view details, and book appointments. Service providers can register and manage their profiles. The platform also includes a chatbot for assistance and various resources for career development.
+CraftConnect aims to connect users with service providers in their community. Users can browse available services, view details, and book appointments. Service providers can register and manage their profiles.
 
 ---
 
@@ -30,7 +30,6 @@ CraftConnect aims to connect users with service providers in their community. Us
 ✅ Browse and view details of available services  
 ✅ Book services  
 ✅ User profile management  
-✅ Career guidance and job market analytics  
 ✅ Emotional intelligence resources  
 ✅ Chatbot for assistance  
 
@@ -44,46 +43,55 @@ CraftConnect aims to connect users with service providers in their community. Us
 🚀 Integrate with third-party APIs for additional features  
 
 ---
-
 ## Directory Structure
 ```
-.gitignore
-backend/
-    .env
-    controllers/
-        careerGuidanceController.js
-        userController.js
-        userDetailsController.js
-    data/
-        mongod.lock
-    middleware/
-        authMiddleware.js
-    models/
-        User.js
-    package.json
-    routes/
-        careerGuidanceRoutes.js
-        chatbotRoutes.js
-        userDetailsRoutes.js
-        userRoutes.js
-    server.js
-frontend/
-    .env
-    .gitignore
-    package.json
-    public/
-        favicon.ico
-        index.html
-        logo192.png
-        logo512.png
-        manifest.json
-        robots.txt
-    README.md
-    src/
-        api.js
-        App.css
-        App.js
-        ...
+.
+├── .gitignore
+├── README.md
+├── LICENSE
+├── backend/
+│   ├── .env
+│   ├── controllers/
+│   │   ├── userController.js
+│   │   └── userDetailsController.js
+│   ├── data/
+│   │   └── mongod.lock
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── models/
+│   │   ├── Service.js
+│   │   ├── User.js
+│   │   └── Booking.js
+│   ├── package.json
+│   ├── routes/
+│   │   ├── bookingRoutes.js
+│   │   ├── chatbotRoutes.js
+│   │   ├── serviceRoutes.js
+│   │   ├── userDetailsRoutes.js
+│   │   └── userRoutes.js
+│   └── server.js
+└── frontend/
+   ├── .env
+   ├── .gitignore
+   ├── package.json
+   ├── public/
+   │   ├── favicon.ico
+   │   ├── index.html
+   │   ├── logo192.png
+   │   ├── logo512.png
+   │   ├── manifest.json
+   │   └── robots.txt
+   ├── README.md
+   └── src/
+      ├── api.js
+      ├── App.css
+      ├── App.js
+      ├── components/
+      ├── contexts/
+      ├── hooks/
+      ├── pages/
+      ├── utils/
+      └── index.js
 ```
 
 ---
