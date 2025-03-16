@@ -19,7 +19,7 @@ router.post("/chat", async (req, res) => {
 
     // Extract response text
     const reply = response?.response?.candidates?.[0]?.content?.parts?.[0]?.text 
-      || "I'm here to assist with career guidance. Could you clarify your question?";
+      || "I'm here to assist with community service inquiries. How can I help you today?";
 
     res.status(200).json({ reply });
   } catch (err) {
