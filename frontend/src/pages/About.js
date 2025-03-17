@@ -11,7 +11,7 @@ const About = () => {
         <div className="about-hero bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">About CraftConnect</h1>
-            <p className="text-xl opacity-90 mb-8">Connecting communities with skilled professionals since 2023</p>
+            <p className="text-xl opacity-90 mb-8">Connecting communities with skilled professionals since 2025</p>
           </div>
         </div>
 

@@ -7,8 +7,7 @@ const User = require('../models/User');
 // Create a new booking
 router.post('/create', async (req, res) => {
   try {
-    const { service, client_name, client_email, booking_date } = req.body;
-    console.log('Booking Request:', req.body);
+    const { service, client_name, client_email, booking_date, contact_number, special_instructions } = req.body;
 
     // Validate that the service exists
     const serviceExists = await Service.findById(service);
@@ -19,12 +18,7 @@ router.post('/create', async (req, res) => {
     // Get user from email or create temporary user
     let user = await User.findOne({ email: client_email });
     if (!user) {
-      user = new User({
-        name: client_name,
-        email: client_email,
-        role: 'client'
-      });
-      await user.save();
+      return res.status(404).json({ message: 'User not found. Please log in again.' });
     }
     
     const newBooking = new Booking({
@@ -33,6 +27,8 @@ router.post('/create', async (req, res) => {
       client_name,
       client_email,
       booking_date: new Date(booking_date),
+      contact_number,
+      special_instructions,
       status: 'Pending'
     });
 

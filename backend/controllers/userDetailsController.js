@@ -37,7 +37,6 @@ const saveUserDetails = async (req, res) => {
 
     res.status(200).json({ message: "User details saved successfully" });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };

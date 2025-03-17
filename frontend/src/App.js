@@ -18,6 +18,7 @@ import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import FAQs from "./pages/FAQs";
 import BookingHistory from "./pages/BookingHistory";
+import NearbyServicesPage from './pages/NearbyServicesPage';
 
 // Create a component to conditionally render the ChatbotWidget
 const ConditionalChatbot = () => {
@@ -50,6 +51,7 @@ function App() {
         <Route path="/search/:query" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
         <Route path="/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />
         <Route path="/booking-history" element={<ProtectedRoute><BookingHistory /></ProtectedRoute>} />
+        <Route path="/nearby-services" element={<ProtectedRoute><NearbyServicesPage /></ProtectedRoute>} />
         
         {/* Routes for footer pages - accessible to all authenticated users */}
         <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
