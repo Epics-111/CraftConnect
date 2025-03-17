@@ -3,6 +3,64 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { FaUsers, FaLightbulb, FaHandshake } from "react-icons/fa";
 
+// Replace image imports with placeholder URLs
+const teamMembers = [
+  {
+    name: "Mohammad Ammar",
+    role: "CEO & Founder",
+    image: "/team/Mohammad Ammar.jpg",
+    description: "Leading the vision and strategy of CraftConnect to revolutionize service delivery."
+  },
+  {
+    name: "Simran",
+    role: "CTO",
+    image: "/team/simran.jpg",
+    description: "Driving technological innovation and platform development."
+  },
+  {
+    name: "Mansi Yadav",
+    role: "Head of Product Design",
+    image: "/team/mansi yadav.jpg",
+    description: "Creating intuitive and user-friendly design solutions."
+  },
+  {
+    name: "Sana Yasmine",
+    role: "Marketing Director",
+    image: "/team/sana yasmine.jpg",
+    description: "Leading marketing strategies and brand development initiatives."
+  },
+  {
+    name: "Simran Gupta",
+    role: "Customer Success Manager",
+    image: "/team/simran gupta.jpg",
+    description: "Ensuring customer satisfaction and service excellence."
+  },
+  {
+    name: "Aparna Yadav",
+    role: "Operations Manager",
+    image: "/team/aparna yadav.jpg",
+    description: "Streamlining operations and optimizing service delivery."
+  },
+  {
+    name: "Aaron Alva",
+    role: "Quality Assurance Lead",
+    image: "/team/aaron alva.jpg",
+    description: "Maintaining high standards of service quality and reliability."
+  },
+  {
+    name: "Palaskar Urvija Sanjay",
+    role: "Community Relations Manager",
+    image: "/team/Palaskar urvija sanjay.jpg",
+    description: "Building and nurturing relationships with service providers and clients."
+  },
+  {
+    name: "Sk Sahil Islam",
+    role: "Technical Lead",
+    image: "/team/sk sahil islam.jpg",
+    description: "Overseeing technical architecture and development processes."
+  },
+];
+
 const About = () => {
   return (
     <>
@@ -57,21 +115,20 @@ const About = () => {
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="team-member text-center">
-                <div className="w-32 h-32 rounded-full bg-gray-300 mx-auto mb-4"></div>
-                <h3 className="text-xl font-semibold">Mohammad Ammar</h3>
-                <p className="text-indigo-600">CEO & Founder</p>
-              </div>
-              <div className="team-member text-center">
-                <div className="w-32 h-32 rounded-full bg-gray-300 mx-auto mb-4"></div>
-                <h3 className="text-xl font-semibold">Simran</h3>
-                <p className="text-indigo-600">CTO</p>
-              </div>
-              <div className="team-member text-center">
-                <div className="w-32 h-32 rounded-full bg-gray-300 mx-auto mb-4"></div>
-                <h3 className="text-xl font-semibold">Mansi</h3>
-                <p className="text-indigo-600">Head of Operations</p>
-              </div>
+              {teamMembers.map((member, index) => (
+                <div key={index} className="team-member text-center">
+                  <div className="w-48 h-48 mx-auto mb-4 overflow-hidden rounded-full shadow-lg">
+                    <img 
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <h3 className="text-xl font-semibold">{member.name}</h3>
+                  <p className="text-indigo-600 mb-2">{member.role}</p>
+                  <p className="text-gray-600 text-sm">{member.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
