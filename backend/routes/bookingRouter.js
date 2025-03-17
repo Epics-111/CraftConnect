@@ -55,14 +55,14 @@ router.post('/create', async (req, res) => {
 });
 
 // Get bookings for a service
-// router.get('/service/:serviceId', async (req, res) => {
-//   try {
-//     const bookings = await Booking.find({ service: req.params.serviceId });
-//     res.json(bookings);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
+router.get('/service/:serviceId', async (req, res) => {
+  try {
+    const bookings = await Booking.find({ service: req.params.serviceId });
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // Get booking history for a user
 router.get('/history', async (req, res) => {
