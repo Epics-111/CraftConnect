@@ -47,11 +47,15 @@ const Footer = () => {
           <ul className="contact-info">
             <li>
               <FaMapMarkerAlt className="contact-icon" />
-              <span>123 Service Street, San Francisco, CA 94105</span>
+              <span>VIT Bhopal University
+Bhopal-Indore Highway,
+Kothrikalan, Sehore,
+Madhya Pradesh - 466114,
+India.</span>
             </li>
             <li>
               <FaPhone className="contact-icon" />
-              <span>+1 (555) 123-4567</span>
+              <span>9999999999</span>
             </li>
             <li>
               <FaEnvelope className="contact-icon" />
