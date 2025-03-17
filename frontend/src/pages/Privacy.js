@@ -10,7 +10,7 @@ const Privacy = () => {
         <div className="privacy-hero bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Privacy Policy</h1>
-            <p className="text-xl opacity-90">Last updated: May 31, 2023</p>
+            <p className="text-xl opacity-90">Last updated: Mar 17, 2025</p>
           </div>
         </div>
 

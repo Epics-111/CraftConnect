@@ -14,6 +14,8 @@ const bookingSchema = new mongoose.Schema({
   client_name: String,
   client_email: String,
   booking_date: Date,
+  contact_number: String,
+  special_instructions: String,
   status: {
     type: String,
     enum: ['Pending', 'Confirmed', 'Cancelled', 'Completed'],
