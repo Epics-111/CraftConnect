@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { logout } from "../auth";
 import "./Header.css";
-import { FaHistory, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaHistory, FaUser, FaSignOutAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -42,6 +42,11 @@ const Header = () => {
           <li>
             <Link to="/booking-history" onClick={() => setMenuOpen(false)}>
               <FaHistory className="nav-icon" /> Booking History
+            </Link>
+          </li>
+          <li>
+            <Link to="/nearby-services" onClick={() => setMenuOpen(false)}>
+              <FaMapMarkerAlt className="nav-icon" /> Nearby Services
             </Link>
           </li>
           <li>
