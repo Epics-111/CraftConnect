@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BookingForm from "../components/BookingForm";
 import axios from "axios";
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaStar } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 
 const ServiceDetail = () => {
   const { id } = useParams();
