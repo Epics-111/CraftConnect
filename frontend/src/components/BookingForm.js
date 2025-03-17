@@ -1,26 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { FaCalendarAlt, FaClock, FaCommentAlt, FaPhone, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaCommentAlt, FaPhone, FaChevronLeft, FaChevronRight, FaUser } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const BookingForm = ({ bookingState, setBookingState, onSubmit, onChange, timeSlots }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isProfileComplete, setIsProfileComplete] = useState(true);
   
   // Load user data from localStorage when component mounts
   useEffect(() => {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       if (user) {
-        setBookingState(prev => ({
-          ...prev,
-          data: {
-            ...prev.data,
-            client_name: user.name || '',
-            client_email: user.email || '',
-          }
-        }));
+        // Check if profile is complete
+        if (!user.name || !user.name.trim()) {
+          setIsProfileComplete(false);
+        } else {
+          setIsProfileComplete(true);
+          setBookingState(prev => ({
+            ...prev,
+            data: {
+              ...prev.data,
+              client_name: user.name || '',
+              client_email: user.email || '',
+            }
+          }));
+        }
+      } else {
+        setIsProfileComplete(false);
       }
     } catch (error) {
       console.error('Error loading user data from localStorage:', error);
+      setIsProfileComplete(false);
     }
   }, [setBookingState]);
 
@@ -194,11 +205,42 @@ const BookingForm = ({ bookingState, setBookingState, onSubmit, onChange, timeSl
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-8">
       <button
-        onClick={() => setBookingState(prev => ({ ...prev, showForm: !prev.showForm }))}
-        className="w-full md:w-auto px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
+        onClick={() => {
+          if (isProfileComplete) {
+            setBookingState(prev => ({ ...prev, showForm: !prev.showForm }));
+          }
+        }}
+        className={`w-full md:w-auto px-6 py-3 font-semibold rounded-lg transition-colors ${
+          isProfileComplete 
+            ? "bg-blue-500 text-white hover:bg-blue-600" 
+            : "bg-gray-300 text-gray-600 cursor-not-allowed"
+        }`}
       >
         {bookingState.showForm ? "Cancel Booking" : "Book Now"}
       </button>
+
+      {!isProfileComplete && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4 mb-2">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <FaUser className="h-5 w-5 text-yellow-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-yellow-700">
+                Please complete your profile before making a booking.
+              </p>
+              <p className="mt-2">
+                <Link 
+                  to="/user-details" 
+                  className="font-medium underline text-yellow-700 hover:text-yellow-600"
+                >
+                  Complete your profile
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {bookingState.status && (
         <div className={`mt-4 p-4 rounded-lg ${
@@ -208,7 +250,7 @@ const BookingForm = ({ bookingState, setBookingState, onSubmit, onChange, timeSl
         </div>
       )}
 
-      {bookingState.showForm && (
+      {isProfileComplete && bookingState.showForm && (
         <form onSubmit={onSubmit} className="mt-6 grid grid-cols-1 gap-6">
           <div className="space-y-6">
             <div>
