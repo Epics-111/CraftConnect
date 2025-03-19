@@ -46,52 +46,132 @@ CraftConnect aims to connect users with service providers in their community. Us
 ## Directory Structure
 ```
 .
+├── .DS_Store
+├── .github
+    └── workflows
+    │   └── deploy.yml
 ├── .gitignore
-├── README.md
 ├── LICENSE
-├── backend/
-│   ├── .env
-│   ├── controllers/
-│   │   ├── userController.js
-│   │   └── userDetailsController.js
-│   ├── data/
-│   │   └── mongod.lock
-│   ├── middleware/
-│   │   └── authMiddleware.js
-│   ├── models/
-│   │   ├── Service.js
-│   │   ├── User.js
-│   │   └── Booking.js
-│   ├── package.json
-│   ├── routes/
-│   │   ├── bookingRoutes.js
-│   │   ├── chatbotRoutes.js
-│   │   ├── serviceRoutes.js
-│   │   ├── userDetailsRoutes.js
-│   │   └── userRoutes.js
-│   └── server.js
-└── frontend/
-   ├── .env
-   ├── .gitignore
-   ├── package.json
-   ├── public/
-   │   ├── favicon.ico
-   │   ├── index.html
-   │   ├── logo192.png
-   │   ├── logo512.png
-   │   ├── manifest.json
-   │   └── robots.txt
-   ├── README.md
-   └── src/
-      ├── api.js
-      ├── App.css
-      ├── App.js
-      ├── components/
-      ├── contexts/
-      ├── hooks/
-      ├── pages/
-      ├── utils/
-      └── index.js
+├── README.md
+├── backend
+    ├── .DS_Store
+    ├── .github
+    │   └── workflows
+    │   │   └── deploy.yml
+    ├── .gitignore
+    ├── controllers
+    │   ├── userController.js
+    │   └── userDetailsController.js
+    ├── data
+    │   └── mongod.lock
+    ├── middleware
+    │   └── authMiddleware.js
+    ├── models
+    │   ├── Booking.js
+    │   ├── Review.js
+    │   ├── Service.js
+    │   └── User.js
+    ├── package-lock.json
+    ├── package.json
+    ├── routes
+    │   ├── bookingRouter.js
+    │   ├── chatbotRoutes.js
+    │   ├── serviceRouter.js
+    │   ├── services.js
+    │   ├── userDetailsRoutes.js
+    │   └── userRoutes.js
+    ├── scripts
+    │   └── addServicesWithLocations.js
+    ├── server.js
+    └── utils
+    │   └── encryption.js
+├── craftconnect.pem
+├── docker-compose.yml
+├── flask_auth
+    ├── .env
+    ├── .gitignore
+    ├── __pycache__
+    │   ├── app.cpython-312.pyc
+    │   └── app.cpython-39.pyc
+    ├── app.py
+    ├── requirements.txt
+    └── utils
+    │   ├── __pycache__
+    │       └── encryption.cpython-312.pyc
+    │   └── encryption.py
+├── frontend
+    ├── .gitignore
+    ├── package-lock.json
+    ├── package.json
+    ├── postcss.config.js
+    ├── public
+    │   ├── favicon.ico
+    │   ├── icon.jpg
+    │   ├── index.html
+    │   ├── logo192.png
+    │   ├── logo512.png
+    │   ├── manifest.json
+    │   ├── robots.txt
+    │   └── team
+    │   │   ├── Aaron Alva.jpg
+    │   │   ├── Aparna Yadav.jpg
+    │   │   ├── Mansi Yadav.jpg
+    │   │   ├── Mohammad Ammar.jpg
+    │   │   ├── Palaskar Urvija Sanjay.jpg
+    │   │   ├── Sana Yasmine.jpg
+    │   │   ├── Simran Gupta.jpg
+    │   │   ├── Simran.jpg
+    │   │   └── Sk Sahil Islam.jpg
+    ├── src
+    │   ├── App.css
+    │   ├── App.js
+    │   ├── api.js
+    │   ├── auth.js
+    │   ├── components
+    │   │   ├── BookingForm.js
+    │   │   ├── Chatbot.css
+    │   │   ├── Chatbot.js
+    │   │   ├── ChatbotWidget.css
+    │   │   ├── ChatbotWidget.js
+    │   │   ├── Footer.css
+    │   │   ├── Footer.js
+    │   │   ├── Header.css
+    │   │   ├── Header.js
+    │   │   ├── NearbyServices.css
+    │   │   ├── NearbyServices.jsx
+    │   │   ├── ProtectedRoute.js
+    │   │   ├── ProviderProfile.js
+    │   │   ├── SearchBar.css
+    │   │   ├── SearchBar.js
+    │   │   ├── SkeletonLoader.js
+    │   │   └── StarRating.js
+    │   ├── index.css
+    │   ├── index.js
+    │   ├── pages
+    │   │   ├── About.js
+    │   │   ├── BookingHistory.js
+    │   │   ├── Contact.js
+    │   │   ├── Dashboard.css
+    │   │   ├── Dashboard.js
+    │   │   ├── FAQs.js
+    │   │   ├── LoginSignup.css
+    │   │   ├── LoginSignup.js
+    │   │   ├── NearbyServicesPage.js
+    │   │   ├── NotFound.js
+    │   │   ├── Privacy.js
+    │   │   ├── Reviews.js
+    │   │   ├── SearchResults.js
+    │   │   ├── ServiceDetails.js
+    │   │   ├── ServiceListByTitle.js
+    │   │   ├── Services.js
+    │   │   ├── Terms.js
+    │   │   ├── UserDetails.css
+    │   │   └── UserDetails.js
+    │   └── reportWebVitals.js
+    └── tailwind.config.js
+├── package-lock.json
+└── package.json
+
 ```
 
 ---
