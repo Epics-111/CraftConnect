@@ -2,11 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './RecommendedServices.css';
+import { FaTools, FaWrench, FaBolt, FaBroom, FaBabyCarriage, FaPaintRoller } from 'react-icons/fa';
 
 const RecommendedServices = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Service icon mapping
+  const serviceIconMap = {
+    "Plumbing": <FaWrench className="recommendation-icon" />,
+    "Electrician": <FaBolt className="recommendation-icon" />,
+    "Electrical": <FaBolt className="recommendation-icon" />,
+    "House Cleaning": <FaBroom className="recommendation-icon" />,
+    "Cleaning": <FaBroom className="recommendation-icon" />,
+    "Babysitting": <FaBabyCarriage className="recommendation-icon" />,
+    "Painting": <FaPaintRoller className="recommendation-icon" />,
+    "default": <FaTools className="recommendation-icon" />
+  };
+
+  // Helper function to get an appropriate icon based on service title
+  const getServiceIcon = (title) => {
+    const matchedKey = Object.keys(serviceIconMap).find(key => 
+      title.toLowerCase().includes(key.toLowerCase())
+    );
+    
+    return matchedKey ? serviceIconMap[matchedKey] : serviceIconMap.default;
+  };
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -21,7 +43,8 @@ const RecommendedServices = () => {
           `${process.env.REACT_APP_API_URL}/api/recommendations/${userData._id}`
         );
         
-        setRecommendations(response.data);
+        // Limit to maximum 4 recommendations
+        setRecommendations(response.data.slice(0, 4));
         setLoading(false);
       } catch (err) {
         console.error("Error fetching recommendations:", err);
@@ -62,6 +85,9 @@ const RecommendedServices = () => {
             key={service._id}
             className="recommendation-card"
           >
+            <div className="recommendation-icon-container">
+              {getServiceIcon(service.title)}
+            </div>
             <h3>{service.title}</h3>
             <p className="recommendation-price">{formatPrice(service.price)}</p>
             <p className="recommendation-provider">{service.provider_name}</p>

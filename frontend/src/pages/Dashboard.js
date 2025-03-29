@@ -3,19 +3,74 @@ import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
-import { FaUsers, FaTools, FaCheckCircle } from "react-icons/fa";
+import { 
+  FaUsers, 
+  FaTools, 
+  FaCheckCircle, 
+  FaWrench, 
+  FaBolt, 
+  FaBroom, 
+  FaBabyCarriage, 
+  FaPaintRoller,
+  FaHammer,
+  FaHardHat 
+} from "react-icons/fa";
 import "./Dashboard.css";
 import RecommendedServices from '../components/RecommendedServices';
 
+// Updated services with appropriate icons and fallback mechanism
 const services = [
-  { name: "Plumbing", image: "https://cdn1.vectorstock.com/i/1000x1000/73/05/sanitary-engineering-plumber-at-plumbing-work-vector-10237305.jpg" },
-  { name: "Electrician", image: "https://i.pinimg.com/736x/0f/db/ce/0fdbce72cbb55ba6c87495876d70f37e.jpg" },
-  { name: "House Cleaning", image: "https://cdn5.vectorstock.com/i/1000x1000/44/69/man-male-cleaning-service-house-office-cleaner-vector-8294469.jpg" },
-  { name: "Babysitting", image: "https://cdn.vectorstock.com/i/1000v/18/73/babysitter-cartoon-vector-44781873.jpg" },
-  { name: "Painting", image: "https://www.shutterstock.com/image-vector/wall-painter-vector-worker-work-260nw-720756157.jpg" }
+  { 
+    name: "Plumbing", 
+    image: "https://cdn1.vectorstock.com/i/1000x1000/73/05/sanitary-engineering-plumber-at-plumbing-work-vector-10237305.jpg", 
+    icon: <FaWrench className="service-icon" /> 
+  },
+  { 
+    name: "Electrician", 
+    image: "https://i.pinimg.com/736x/0f/db/ce/0fdbce72cbb55ba6c87495876d70f37e.jpg", 
+    icon: <FaBolt className="service-icon" /> 
+  },
+  { 
+    name: "House Cleaning", 
+    image: "https://cdn5.vectorstock.com/i/1000x1000/44/69/man-male-cleaning-service-house-office-cleaner-vector-8294469.jpg", 
+    icon: <FaBroom className="service-icon" /> 
+  },
+  { 
+    name: "Babysitting", 
+    image: "https://cdn.vectorstock.com/i/1000v/18/73/babysitter-cartoon-vector-44781873.jpg", 
+    icon: <FaBabyCarriage className="service-icon" /> 
+  },
+  { 
+    name: "Painting", 
+    image: "https://www.shutterstock.com/image-vector/wall-painter-vector-worker-work-260nw-720756157.jpg", 
+    icon: <FaPaintRoller className="service-icon" /> 
+  }
 ];
 
+// Default icons mapping for various service types
+const serviceIconMap = {
+  "Plumbing": <FaWrench className="service-icon" />,
+  "Electrician": <FaBolt className="service-icon" />,
+  "House Cleaning": <FaBroom className="service-icon" />,
+  "Babysitting": <FaBabyCarriage className="service-icon" />,
+  "Painting": <FaPaintRoller className="service-icon" />,
+  "Carpentry": <FaHammer className="service-icon" />,
+  "Construction": <FaHardHat className="service-icon" />,
+  "default": <FaTools className="service-icon" /> // Default fallback icon
+};
+
 const Dashboard = () => {
+  // Helper function to handle image loading errors
+  const handleImageError = (e, serviceName) => {
+    e.target.style.display = 'none'; // Hide the broken image
+    e.target.nextElementSibling.style.display = 'flex'; // Show the fallback icon
+  };
+
+  // Helper function to get an appropriate icon based on service name
+  const getServiceIcon = (serviceName) => {
+    return serviceIconMap[serviceName] || serviceIconMap.default;
+  };
+
   return (
     <div className="dashboard-container min-h-screen bg-gray-100">
       <Header />
@@ -25,7 +80,24 @@ const Dashboard = () => {
         <h1 className="text-5xl font-extrabold">Find Trusted Professionals Near You</h1>
         <p className="mt-4 text-lg">Book skilled service providers for your daily needs.</p>
         <div className="mt-6 flex justify-center gap-4">
-          <Link to="/services" className="btn-primary">Explore All Services</Link>
+          <Link to="/services" className="btn-primary animated-btn">
+            <span className="relative z-10">Explore All Services</span>
+            {/* Add dynamic sparkles */}
+            {[...Array(5)].map((_, i) => (
+              <span 
+                key={i}
+                className="sparkle absolute"
+                style={{
+                  width: `${Math.random() * 6 + 2}px`,
+                  height: `${Math.random() * 6 + 2}px`,
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  opacity: Math.random() * 0.7 + 0.3
+                }}
+              />
+            ))}
+          </Link>
         </div>
       </section>
 
@@ -43,7 +115,15 @@ const Dashboard = () => {
           {services.map((service, index) => (
             <Link to={`/services/title/${service.name}`} key={index} className="service-card">
               <div className="service-card-inner">
-                <img src={service.image} alt={service.name} className="service-img" />
+                <img 
+                  src={service.image} 
+                  alt={service.name} 
+                  className="service-img" 
+                  onError={(e) => handleImageError(e, service.name)}
+                />
+                <div className="icon-fallback">
+                  {getServiceIcon(service.name)}
+                </div>
                 <h3 className="service-name">{service.name}</h3>
               </div>
             </Link>

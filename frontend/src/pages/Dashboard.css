@@ -195,3 +195,138 @@
     color: #4b5563;
     font-size: 1.125rem;
   }
+
+  .btn-primary.animated-btn {
+    position: relative;
+    padding: 14px 28px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #4f46e5, #2563eb);
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+    z-index: 1;
+  }
+
+  /* Add the sparkly border effect */
+  .btn-primary.animated-btn:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    z-index: -1;
+    background: linear-gradient(90deg, 
+      rgba(255, 215, 0, 0.5), /* More transparent gold */
+      rgba(255, 236, 139, 0.4), /* More transparent yellow */
+      rgba(255, 255, 224, 0.3), /* Even more transparent light yellow */
+      rgba(255, 215, 0, 0.5),
+      rgba(255, 236, 139, 0.4),
+      rgba(255, 255, 224, 0.3),
+      rgba(255, 215, 0, 0.5));
+    background-size: 400% 400%;
+    border-radius: 10px;
+    animation: sparkleMove 8s linear infinite, glowPulse 4s ease-in-out infinite;
+  }
+
+  /* Create the hover color transition */
+  .btn-primary.animated-btn:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+  }
+
+  .btn-primary.animated-btn:hover:after {
+    opacity: 1;
+  }
+
+  /* Add sparkle effects */
+  .btn-primary.animated-btn .sparkle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    animation: sparkle 3s linear infinite;
+    z-index: 2;
+  }
+
+  /* Hover effects */
+  .btn-primary.animated-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
+  }
+
+  /* Animation for the sparkle border movement - SLOWER */
+  @keyframes sparkleMove {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 400% 50%;
+    }
+  }
+
+  /* Animation for the glow pulse - MORE SUBTLE */
+  @keyframes glowPulse {
+    0% {
+      box-shadow: 0 0 5px 1px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 12px 3px rgba(255, 215, 0, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 5px 1px rgba(255, 215, 0, 0.3);
+    }
+  }
+
+  /* Animation for individual sparkles - SLOWER */
+  @keyframes sparkle {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1) rotate(180deg);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(0) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .icon-fallback {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .service-icon {
+    font-size: 4rem;
+    color: #4f46e5;
+  }
+
+  .sparkle {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: sparkle 1.5s linear infinite;
+    z-index: 2;
+  }
