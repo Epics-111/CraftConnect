@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
 import { FaUsers, FaTools, FaCheckCircle } from "react-icons/fa";
 import "./Dashboard.css";
+import RecommendedServices from '../components/RecommendedServices';
 
 const services = [
   { name: "Plumbing", image: "https://cdn1.vectorstock.com/i/1000x1000/73/05/sanitary-engineering-plumber-at-plumbing-work-vector-10237305.jpg" },
@@ -30,6 +31,10 @@ const Dashboard = () => {
 
       {/* Search Bar */}
       <SearchBar />
+
+      <section className="max-w-6xl mx-auto px-4 mt-12">
+        <RecommendedServices />
+      </section>
 
       {/* Featured Services */}
       <section className="max-w-6xl mx-auto px-4 my-16">

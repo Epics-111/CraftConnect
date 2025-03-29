@@ -7,57 +7,57 @@ import { FaUsers, FaLightbulb, FaHandshake } from "react-icons/fa";
 const teamMembers = [
   {
     name: "Mohammad Ammar",
-    role: "CEO & Founder",
+    role: "Lead Developer",
     image: "/team/Mohammad Ammar.jpg",
-    description: "Leading the vision and strategy of CraftConnect to revolutionize service delivery."
+    description: "Implemented core features, technical management, and platform architecture."
   },
   {
     name: "Simran",
-    role: "CTO",
+    role: "Backend Developer",
     image: "/team/Simran.jpg",
-    description: "Driving technological innovation and platform development."
+    description: "Developed the source code foundation and implemented booking systems."
   },
   {
     name: "Mansi Yadav",
-    role: "Head of Product Design",
+    role: "Project Conceptualist",
     image: "/team/Mansi Yadav.jpg",
-    description: "Creating intuitive and user-friendly design solutions."
+    description: "Proposed the initial idea and managed documentation, including README and explanations."
   },
   {
     name: "Sana Yasmine",
-    role: "Marketing Director",
+    role: "DevOps Engineer",
     image: "/team/Sana Yasmine.jpg",
-    description: "Leading marketing strategies and brand development initiatives."
+    description: "Handled deployment processes and AWS infrastructure implementation."
   },
   {
     name: "Simran Gupta",
-    role: "Customer Success Manager",
+    role: "Security Specialist",
     image: "/team/Simran Gupta.jpg",
-    description: "Ensuring customer satisfaction and service excellence."
+    description: "Implemented authentication systems and security improvements throughout the platform."
   },
   {
     name: "Aparna Yadav",
-    role: "Operations Manager",
+    role: "Support Developer",
     image: "/team/Aparna Yadav.jpg",
-    description: "Streamlining operations and optimizing service delivery."
+    description: "Provided cross-functional support and contributed to various platform components."
   },
   {
     name: "Aaron Alva",
-    role: "Quality Assurance Lead",
+    role: "UI Designer",
     image: "/team/Aaron Alva.jpg",
-    description: "Maintaining high standards of service quality and reliability."
+    description: "Contributed to platform design elements and visual components."
   },
   {
     name: "Palaskar Urvija Sanjay",
-    role: "Community Relations Manager",
+    role: "UX Designer",
     image: "/team/Palaskar Urvija Sanjay.jpg",
-    description: "Building and nurturing relationships with service providers and clients."
+    description: "Worked on design concepts and iconography throughout the application."
   },
   {
     name: "Sk Sahil Islam",
-    role: "Technical Lead",
+    role: "QA Engineer",
     image: "/team/Sk Sahil Islam.jpg",
-    description: "Overseeing technical architecture and development processes."
+    description: "Led testing initiatives and quality assurance processes."
   },
 ];
 

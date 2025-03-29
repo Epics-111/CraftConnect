@@ -66,6 +66,28 @@ const ServiceDetail = () => {
     fetchServiceDetails();
   }, [id]);
 
+  useEffect(() => {
+    const trackServiceView = async () => {
+      try {
+        if (!id) return;
+        
+        const userData = JSON.parse(localStorage.getItem("user"));
+        if (!userData || !userData.email) return;
+        
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/analytics/track`, {
+          userId: userData._id,
+          activityType: 'VIEW',
+          serviceId: id
+        });
+      } catch (err) {
+        console.error("Error tracking service view:", err);
+        // Non-critical error, don't need to show to user
+      }
+    };
+    
+    trackServiceView();
+  }, [id]);
+
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
     

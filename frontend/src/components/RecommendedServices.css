@@ -1,0 +1,58 @@
+.recommended-services {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: #f9f9fb;
+  border-radius: 0.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4338ca;
+  margin-bottom: 1rem;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.recommendation-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.recommendation-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.recommendation-price {
+  font-weight: 600;
+  color: #059669;
+  margin-bottom: 0.25rem;
+}
+
+.recommendation-provider {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.recommendation-loading {
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+}
