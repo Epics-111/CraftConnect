@@ -46,19 +46,9 @@ CraftConnect aims to connect users with service providers in their community. Us
 ## Directory Structure
 ```
 .
-├── .DS_Store
-├── .github
-    └── workflows
-    │   └── deploy.yml
-├── .gitignore
 ├── LICENSE
 ├── README.md
 ├── backend
-    ├── .DS_Store
-    ├── .github
-    │   └── workflows
-    │   │   └── deploy.yml
-    ├── .gitignore
     ├── controllers
     │   ├── userController.js
     │   └── userDetailsController.js
@@ -89,15 +79,9 @@ CraftConnect aims to connect users with service providers in their community. Us
 ├── docker-compose.yml
 ├── flask_auth
     ├── .env
-    ├── .gitignore
-    ├── __pycache__
-    │   ├── app.cpython-312.pyc
-    │   └── app.cpython-39.pyc
     ├── app.py
     ├── requirements.txt
     └── utils
-    │   ├── __pycache__
-    │       └── encryption.cpython-312.pyc
     │   └── encryption.py
 ├── frontend
     ├── .gitignore
