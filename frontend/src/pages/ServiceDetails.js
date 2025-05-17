@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BookingForm from "../components/BookingForm";
 import axios from "axios";
-import { FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaArrowLeft } from "react-icons/fa";
 
 const ServiceDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -158,6 +159,13 @@ const ServiceDetail = () => {
     <>
       <Header />
       <div className="max-w-4xl mx-auto mt-10 px-4 py-6">
+        <button 
+          onClick={() => navigate(-1)}
+          className="flex items-center mb-4 text-indigo-600 hover:text-indigo-800 transition-colors"
+        >
+          <FaArrowLeft className="mr-2" /> Back to services
+        </button>
+        
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="p-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-4">{service.title}</h1>
