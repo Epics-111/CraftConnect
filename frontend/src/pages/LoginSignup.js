@@ -63,7 +63,7 @@ const LoginSignup = () => {
       <div className="form-container">
         <h1>
           <img src="/icon.jpg" alt="CraftConnect Logo" className="login-icon" />
-          Craft Connect
+          CraftConnect
         </h1>
         
         {/* Show error message if there is one */}
