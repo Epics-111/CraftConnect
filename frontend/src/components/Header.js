@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { logout } from "../auth";
 import "./Header.css";
-import { FaHistory, FaUser, FaSignOutAlt, FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaHistory, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -35,18 +35,18 @@ const Header = () => {
       <nav className={`nav ${menuOpen ? 'open' : ''}`}>
         <ul>
           <li>
-            <Link to="/user-details" onClick={() => setMenuOpen(false)}>
-              <FaUser className="nav-icon" /> Profile
+            <Link to="/nearby-services" onClick={() => setMenuOpen(false)}>
+              <FaMapMarkerAlt className="nav-icon" /> Nearby
             </Link>
           </li>
           <li>
             <Link to="/booking-history" onClick={() => setMenuOpen(false)}>
-              <FaHistory className="nav-icon" /> Booking History
+              <FaHistory className="nav-icon" /> Bookings
             </Link>
           </li>
           <li>
-            <Link to="/nearby-services" onClick={() => setMenuOpen(false)}>
-              <FaMapMarkerAlt className="nav-icon" /> Nearby Services
+            <Link to="/user-details" onClick={() => setMenuOpen(false)}>
+              <FaUser className="nav-icon" /> Profile
             </Link>
           </li>
           <li>
