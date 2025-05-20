@@ -114,37 +114,22 @@ const UserDetails = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     
-    // Update the field value
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      case 'age':
-        setAge(value);
-        break;
-      case 'contactNo':
-        setContactNo(value);
-        break;
-      case 'address':
-        setAddress(value);
-        break;
-      case 'serviceType':
-        setServiceType(value);
-        break;
-      case 'experience':
-        setExperience(value);
-        break;
-      case 'hourlyRate':
-        setHourlyRate(value);
-        break;
-      default:
-        break;
+    // Use dynamic property setting instead of switch case
+    const setters = {
+      name: setName,
+      email: setEmail,
+      password: setPassword,
+      age: setAge,
+      contactNo: setContactNo,
+      address: setAddress,
+      serviceType: setServiceType,
+      experience: setExperience,
+      hourlyRate: setHourlyRate
+    };
+    
+    // Call the appropriate setter function
+    if (setters[name]) {
+      setters[name](value);
     }
     
     // Validate the field

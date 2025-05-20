@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import axios from 'axios';
+import { apiRequest } from '../api';
 import { FaCalendar, FaClock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const BookingHistory = () => {
@@ -18,17 +18,10 @@ const BookingHistory = () => {
           throw new Error('User email not found');
         }
 
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/bookings/history`, 
-          {
-            params: { client_email: userData.email },
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          }
-        );
+        // Use apiRequest instead of axios
+        const data = await apiRequest(`/api/bookings/history?client_email=${userData.email}`, 'GET');
         
-        setBookings(response.data);
+        setBookings(data);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching bookings:', err);

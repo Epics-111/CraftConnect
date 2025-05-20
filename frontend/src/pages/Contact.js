@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
+import { apiRequest } from "../api"; // Import the apiRequest utility
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const Contact = () => {
     message: ""
   });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null); // Add error state
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,18 +22,27 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
-    setSubmitted(true);
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: ""
-    });
-    setTimeout(() => setSubmitted(false), 5000);
+    setError(null); // Reset any previous errors
+    
+    try {
+      // Send form data to the backend using apiRequest
+      await apiRequest('/api/contact', 'POST', formData);
+      
+      console.log("Form submitted successfully");
+      setSubmitted(true);
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+      });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      setError(err.message || "Failed to submit contact form. Please try again later.");
+    }
   };
 
   return (
@@ -75,6 +86,12 @@ const Contact = () => {
                 Thank you for your message! We'll get back to you soon.
               </div>
             ) : null}
+            
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-8 text-center">
+                {error}
+              </div>
+            )}
             
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">

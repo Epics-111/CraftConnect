@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import LoginSignup from "./pages/LoginSignup";
 import Dashboard from "./pages/Dashboard";
@@ -8,10 +8,10 @@ import NotFound from "./pages/NotFound";
 import ServiceDetails from "./pages/ServiceDetails";
 import ProtectedRoute from './components/ProtectedRoute';
 import UserDetails from "./pages/UserDetails";
-import Reviews from "./pages/Reviews";
+// import Reviews from "./pages/Reviews";
 import ServiceListByTitle from "./pages/ServiceListByTitle";
 import SearchResults from "./pages/SearchResults";
-import ChatbotWidget from "./components/ChatbotWidget";
+import ChatbotWidget from "./components/ChatbotWidget"; //have a look here
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -20,50 +20,42 @@ import FAQs from "./pages/FAQs";
 import BookingHistory from "./pages/BookingHistory";
 import NearbyServicesPage from './pages/NearbyServicesPage';
 
-// Create a component to conditionally render the ChatbotWidget
-const ConditionalChatbot = () => {
-  const location = useLocation();
-  const [showChatbot, setShowChatbot] = useState(false);
-  
-  useEffect(() => {
-    // Only show chatbot if user is logged in (token exists) and not on login page
-    const isLoggedIn = localStorage.getItem("token") !== null;
-    const isLoginPage = location.pathname === "/";
-    setShowChatbot(isLoggedIn && !isLoginPage);
-  }, [location]);
-  
-  return showChatbot ? <ChatbotWidget /> : null;
-};
+// Layout component that includes the chatbot for all protected routes
+const ProtectedLayout = ({ children }) => (
+  <>
+    {children}
+    <ChatbotWidget />
+  </>
+);
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public routes */}
+        {/* Public route - no chatbot */}
         <Route path="/" element={<LoginSignup />} />
         
-        {/* Protected routes - require authentication */}
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/user-details" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
-        <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
-        <Route path="/service/:id" element={<ProtectedRoute><ServiceDetails /></ProtectedRoute>} />
-        <Route path="/services/title/:title" element={<ProtectedRoute><ServiceListByTitle /></ProtectedRoute>} />
-        <Route path="/search/:query" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
-        <Route path="/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />
-        <Route path="/booking-history" element={<ProtectedRoute><BookingHistory /></ProtectedRoute>} />
-        <Route path="/nearby-services" element={<ProtectedRoute><NearbyServicesPage /></ProtectedRoute>} />
+        {/* Protected routes - all include chatbot */}
+        <Route path="/dashboard" element={<ProtectedRoute><ProtectedLayout><Dashboard /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/user-details" element={<ProtectedRoute><ProtectedLayout><UserDetails /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/services" element={<ProtectedRoute><ProtectedLayout><Services /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/service/:id" element={<ProtectedRoute><ProtectedLayout><ServiceDetails /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/services/title/:title" element={<ProtectedRoute><ProtectedLayout><ServiceListByTitle /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/search/:query" element={<ProtectedRoute><ProtectedLayout><SearchResults /></ProtectedLayout></ProtectedRoute>} />
+        {/* <Route path="/reviews" element={<ProtectedRoute><ProtectedLayout><Reviews /></ProtectedLayout></ProtectedRoute>} /> */}
+        <Route path="/booking-history" element={<ProtectedRoute><ProtectedLayout><BookingHistory /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/nearby-services" element={<ProtectedRoute><ProtectedLayout><NearbyServicesPage /></ProtectedLayout></ProtectedRoute>} />
         
-        {/* Routes for footer pages - accessible to all authenticated users */}
-        <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
-        <Route path="/privacy" element={<ProtectedRoute><Privacy /></ProtectedRoute>} />
-        <Route path="/terms" element={<ProtectedRoute><Terms /></ProtectedRoute>} />
-        <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-        <Route path="/faqs" element={<ProtectedRoute><FAQs /></ProtectedRoute>} />
+        {/* Routes for footer pages - with chatbot */}
+        <Route path="/about" element={<ProtectedRoute><ProtectedLayout><About /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/privacy" element={<ProtectedRoute><ProtectedLayout><Privacy /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/terms" element={<ProtectedRoute><ProtectedLayout><Terms /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/contact" element={<ProtectedRoute><ProtectedLayout><Contact /></ProtectedLayout></ProtectedRoute>} />
+        <Route path="/faqs" element={<ProtectedRoute><ProtectedLayout><FAQs /></ProtectedLayout></ProtectedRoute>} />
         
         {/* Catch all for 404s */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <ConditionalChatbot />
     </Router>
   );
 }
