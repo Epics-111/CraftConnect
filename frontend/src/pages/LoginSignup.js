@@ -1,6 +1,7 @@
 // src/pages/LoginSignup.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../api"; 
 import "./LoginSignup.css";
 
 const LoginSignup = () => {
@@ -20,38 +21,53 @@ const LoginSignup = () => {
 
     try {
       const endpoint = isLogin ? "/api/users/login" : "/api/users/register";
-      const response = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      console.log("Response data:", data);
       
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
+      // Use your API utility function for consistent error handling
+      const data = await apiRequest(endpoint, "POST", { email, password });
+      
+      // For login success
+      if (isLogin) {
+        // Verify required tokens exist
+        if (!data.access_token || !data.refresh_token) {
+          throw new Error("Authentication response missing required tokens");
+        }
         
-        // Create a basic user object if data.user is undefined
-        const userData = data.user || { 
-          email: email,
-          role: "consumer" // Default role
-        };
+        // Store tokens in localStorage
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("refreshToken", data.refresh_token);
         
-        localStorage.setItem("user", JSON.stringify(userData));
-        console.log("Stored user data:", userData);
-        
-        setSuccess(isLogin ? "Login successful! Redirecting..." : "Account created! Redirecting...");
-        
-        // Short delay before redirect for better UX
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      } else {
-        setError(data.message || data.error || "Authentication failed. Please check your credentials.");
+        // Store the complete user object
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          console.log("User data stored successfully:", data.user);
+        } else {
+          // Fallback for backward compatibility
+          localStorage.setItem("user", JSON.stringify({ 
+            email: email,
+            role: "consumer" 
+          }));
+        }
       }
+      
+      // Set appropriate success message
+      setSuccess(isLogin ? "Login successful! Redirecting..." : "Account created! Redirecting...");
+      
+      // Redirect after successful login/signup
+      setTimeout(() => {
+        if (isLogin) {
+          navigate("/dashboard");
+        } else {
+          // After signup, switch to login view
+          setIsLogin(true);
+          setSuccess("Account created! Please log in.");
+          setEmail("");
+          setPassword("");
+        }
+      }, 1500);
+      
     } catch (err) {
-      console.error("Error:", err);
-      setError("Connection error. Please check your internet connection and try again.");
+      console.error("Authentication error:", err);
+      setError(err.message || "Authentication failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -90,6 +106,7 @@ const LoginSignup = () => {
             required
             className={error && error.includes("password") ? "invalid-shake" : ""}
             disabled={loading}
+            minLength={6}
           />
           
           <button 
