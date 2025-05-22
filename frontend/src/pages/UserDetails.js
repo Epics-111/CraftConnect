@@ -169,7 +169,7 @@ const UserDetails = () => {
 
     try {
       // Save the response to a variable and use it
-      const response = await apiRequest("/api/user-details/save-details", "POST", userDetails);
+      const response = await apiRequest("/api/users/save-details", "POST", userDetails);
       
       // Update local storage with properly formatted data
       const currentUser = JSON.parse(localStorage.getItem("user")) || {};
