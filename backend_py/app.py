@@ -1,11 +1,9 @@
-from flask import Flask, request, jsonify
-from utils.encryption import encrypt, hash_email, decrypt
+from flask import Flask
 from datetime import timedelta
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -49,9 +47,11 @@ users_collection = mongo.db.users
 
 # Import blueprints AFTER initializing extensions to avoid circular imports
 from routes.auth import auth_bp
+from routes.services import services_bp  # Add this line
 
 # Register blueprints with URL prefixes
 app.register_blueprint(auth_bp, url_prefix='/api/users')
+app.register_blueprint(services_bp, url_prefix='/api/services')  # Add this line
 # app.register_blueprint(user_bp, url_prefix='/api/user-details')
 # Add more blueprints as needed
 
