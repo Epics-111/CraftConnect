@@ -15,6 +15,7 @@ CORS(services_bp, resources={r"/api/*": {"origins": "*"}})
 # Collection reference
 services_collection = mongo.db.services
 
+<<<<<<< HEAD
 # Create a geospatial index for location-based queries
 # This only needs to be run once after database setup
 # @services_bp.before_app_first_request
@@ -26,6 +27,8 @@ services_collection = mongo.db.services
 #         app.logger.error(f"Error creating geospatial index: {str(e)}")
 
 
+=======
+>>>>>>> refs/remotes/origin/python_backend
 # Get all services
 @services_bp.route('/all', methods=['GET'])
 def get_all_services():
@@ -56,7 +59,11 @@ def get_service_by_id(service_id):
         return jsonify({"msg": "Failed to fetch service", "error": str(e)}), 500
 
 # Search services by title
+<<<<<<< HEAD
 @services_bp.route('/service/title/<title>', methods=['GET'])
+=======
+@services_bp.route('/title/<title>', methods=['GET'])
+>>>>>>> refs/remotes/origin/python_backend
 def search_service_by_title(title):
     try:
         services = list(services_collection.find({
@@ -201,5 +208,9 @@ def delete_service(service_id):
         return jsonify({"msg": "Service deleted successfully"}), 200
     except Exception as e:
         app.logger.error(f"Error deleting service: {str(e)}")
+<<<<<<< HEAD
         return jsonify({"msg": "Failed to delete service", "error": str(e)}), 500
 
+=======
+        return jsonify({"msg": "Failed to delete service", "error": str(e)}), 500
+>>>>>>> refs/remotes/origin/python_backend
