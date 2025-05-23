@@ -19,7 +19,7 @@ const BookingHistory = () => {
         }
 
         // Use apiRequest instead of axios
-        const data = await apiRequest(`/api/bookings/history?client_email=${userData.email}`, 'GET');
+        const data = await apiRequest(`/api/bookings/consumer-history?client_email=${userData.email}`, 'GET');
         
         setBookings(data);
         setLoading(false);

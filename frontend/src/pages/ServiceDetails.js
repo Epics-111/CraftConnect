@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BookingForm from "../components/BookingForm";
-import axios from "axios";
+import { apiRequest } from "../api";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaArrowLeft } from "react-icons/fa";
 
 const ServiceDetail = () => {
@@ -53,8 +53,7 @@ const ServiceDetail = () => {
   useEffect(() => {
     const fetchServiceDetails = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/services/service/${id}`);
-        const serviceData = response.data;
+        const serviceData = await apiRequest(`/api/services/service/${id}`);
         serviceData.price = serviceData.price.$numberDecimal;
         setService(serviceData);
         setLoading(false);
@@ -79,7 +78,8 @@ const ServiceDetail = () => {
         throw new Error("User data not found. Please log in again.");
       }
       
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/bookings/create`, {
+      // Remove the variable assignment since we're not using the response
+      await apiRequest(`/api/bookings/create`, "POST", {
         service: id,
         client_name: userData.name,
         client_email: userData.email,
@@ -88,23 +88,21 @@ const ServiceDetail = () => {
         special_instructions: bookingState.data.special_instructions
       });
       
-      if (response.status === 201) {
-        setBookingState(prev => ({ 
-          ...prev, 
-          status: "Booking successful! We'll contact you to confirm.", 
-          showForm: false 
-        }));
-        
-        // Reset form after 5 seconds
-        setTimeout(() => {
-          setBookingState(prev => ({ ...prev, status: null }));
-        }, 5000);
-      }
-    } catch (err) {
-      console.error("Booking error:", err.response ? err.response.data : err.message);
       setBookingState(prev => ({ 
         ...prev, 
-        status: `Failed to create booking: ${err.response ? err.response.data.message : err.message}`
+        status: "Booking successful! We'll contact you to confirm.", 
+        showForm: false 
+      }));
+      
+      // Reset form after 5 seconds
+      setTimeout(() => {
+        setBookingState(prev => ({ ...prev, status: null }));
+      }, 5000);
+    } catch (err) {
+      console.error("Booking error:", err);
+      setBookingState(prev => ({ 
+        ...prev, 
+        status: `Failed to create booking: ${err.message}`
       }));
     }
   };

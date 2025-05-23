@@ -56,7 +56,7 @@ def get_service_by_id(service_id):
         return jsonify({"msg": "Failed to fetch service", "error": str(e)}), 500
 
 # Search services by title
-@services_bp.route('/title/<title>', methods=['GET'])
+@services_bp.route('/service/title/<title>', methods=['GET'])
 def search_service_by_title(title):
     try:
         services = list(services_collection.find({
@@ -202,3 +202,4 @@ def delete_service(service_id):
     except Exception as e:
         app.logger.error(f"Error deleting service: {str(e)}")
         return jsonify({"msg": "Failed to delete service", "error": str(e)}), 500
+
