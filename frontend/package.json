@@ -21,11 +21,12 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "FAST_REFRESH=false react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "http://localhost:5000",
   "eslintConfig": {
     "extends": [
       "react-app",

@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaRobot, FaTimes, FaChevronUp, FaChevronDown, FaPaperPlane } from "react-icons/fa";
 import "./ChatbotWidget.css";
+import { apiRequest } from "../api"; // Import the API utility
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to the bottom when new messages arrive
@@ -31,39 +33,33 @@ const ChatbotWidget = () => {
     if (message.trim() === "") return;
 
     // Add user message to conversation
-    const newMessage = { sender: "user", text: message };
-    setConversation([...conversation, newMessage]);
+    const userMessage = message.trim();
+    const newMessage = { sender: "user", text: userMessage };
+    setConversation(prev => [...prev, newMessage]);
     
     // Clear input field
     setMessage("");
-
+    
+    // Show loading state
+    setIsLoading(true);
+    
     try {
-      // Simulate bot response (replace with actual API call)
-      setTimeout(() => {
-        const botResponses = [
-          "I can help you find the right service provider for your needs.",
-          "Would you like to explore our popular services?",
-          "You can check our verified professionals with great ratings.",
-          "Is there a specific service you're looking for today?",
-          "Feel free to browse through our categories or search directly."
-        ];
-        
-        const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-        setConversation(prev => [...prev, { sender: "bot", text: randomResponse }]);
-      }, 1000);
+      // Call the chatbot API endpoint using the apiRequest utility
+      const response = await apiRequest("/api/chatbot/chat", "POST", { message: userMessage });
       
-      // In a real implementation, you would call your API:
-      // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chatbot`, {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ message }),
-      // });
-      // const data = await response.json();
-      // setConversation(prev => [...prev, { sender: "bot", text: data.reply }]);
-      
+      // Add bot response to conversation
+      setConversation(prev => [...prev, { 
+        sender: "bot", 
+        text: response.reply 
+      }]);
     } catch (error) {
       console.error("Error in chatbot:", error);
-      setConversation(prev => [...prev, { sender: "bot", text: "Sorry, I'm having trouble right now. Please try again later." }]);
+      setConversation(prev => [...prev, { 
+        sender: "bot", 
+        text: "Sorry, I'm having trouble right now. Please try again later." 
+      }]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,6 +110,13 @@ const ChatbotWidget = () => {
                     {msg.text}
                   </div>
                 ))}
+                
+                {isLoading && (
+                  <div className="message bot-message loading-message">
+                    <p>Thinking...</p>
+                  </div>
+                )}
+                
                 <div ref={messagesEndRef} />
               </div>
               
@@ -124,8 +127,13 @@ const ChatbotWidget = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
+                  disabled={isLoading}
                 />
-                <button className="send-button" onClick={handleSend}>
+                <button 
+                  className="send-button" 
+                  onClick={handleSend}
+                  disabled={isLoading || message.trim() === ""}
+                >
                   <FaPaperPlane />
                 </button>
               </div>

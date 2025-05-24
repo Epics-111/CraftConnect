@@ -49,11 +49,13 @@ users_collection = mongo.db.users
 from routes.auth import auth_bp
 from routes.services import services_bp
 from routes.bookings import bookings_bp  # Add this line
+from routes.chatbot import chatbot_bp
 
 # Register blueprints with URL prefixes
 app.register_blueprint(auth_bp, url_prefix='/api/users')
 app.register_blueprint(services_bp, url_prefix='/api/services')
 app.register_blueprint(bookings_bp, url_prefix='/api/bookings')  # Add this line
+app.register_blueprint(chatbot_bp, url_prefix='/api/chatbot')
 # app.register_blueprint(user_bp, url_prefix='/api/user-details')
 # Add more blueprints as needed
 
