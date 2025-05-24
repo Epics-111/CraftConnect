@@ -8,7 +8,7 @@ const teamMembers = [
   {
     name: "Mohammad Ammar",
     role: "CEO & Founder",
-    image: "/team/Mohammad Ammar.jpg",
+    image: "/team/Mohammad-Ammar.jpg",
     description: "Leading the vision and strategy of CraftConnect to revolutionize service delivery."
   },
   {
@@ -20,43 +20,43 @@ const teamMembers = [
   {
     name: "Mansi Yadav",
     role: "Head of Product Design",
-    image: "/team/Mansi Yadav.jpg",
+    image: "/team/Mansi-Yadav.jpg",
     description: "Creating intuitive and user-friendly design solutions."
   },
   {
     name: "Sana Yasmine",
     role: "Marketing Director",
-    image: "/team/Sana Yasmine.jpg",
+    image: "/team/Sana-Yasmine.jpg",
     description: "Leading marketing strategies and brand development initiatives."
   },
   {
     name: "Simran Gupta",
     role: "Customer Success Manager",
-    image: "/team/Simran Gupta.jpg",
+    image: "/team/Simran-Gupta.jpg",
     description: "Ensuring customer satisfaction and service excellence."
   },
   {
     name: "Aparna Yadav",
     role: "Operations Manager",
-    image: "/team/Aparna Yadav.jpg",
+    image: "/team/Aparna-Yadav.jpg",
     description: "Streamlining operations and optimizing service delivery."
   },
   {
     name: "Aaron Alva",
     role: "Quality Assurance Lead",
-    image: "/team/Aaron Alva.jpg",
+    image: "/team/Aaron-Alva.jpg",
     description: "Maintaining high standards of service quality and reliability."
   },
   {
     name: "Palaskar Urvija Sanjay",
     role: "Community Relations Manager",
-    image: "/team/Palaskar Urvija Sanjay.jpg",
+    image: "/team/Palaskar-Urvija-Sanjay.jpg",
     description: "Building and nurturing relationships with service providers and clients."
   },
   {
     name: "Sk Sahil Islam",
     role: "Technical Lead",
-    image: "/team/Sk Sahil Islam.jpg",
+    image: "/team/Sk-Sahil-Islam.jpg",
     description: "Overseeing technical architecture and development processes."
   },
 ];
