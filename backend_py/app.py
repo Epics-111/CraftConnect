@@ -20,7 +20,7 @@ app = Flask(__name__)
 # Configure app settings BEFORE initializing extensions
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")  # Your secret key for JWT
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")           # MongoDB connection string
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)    # Access tokens expire in 1 hour
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=60)    # Access tokens expire in 1 hour
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)   # Refresh tokens expire in 30 days
 
 # Enhanced CORS setup
@@ -48,15 +48,18 @@ users_collection = mongo.db.users
 # Import blueprints AFTER initializing extensions to avoid circular imports
 from routes.auth import auth_bp
 from routes.services import services_bp
-from routes.bookings import bookings_bp  # Add this line
+from routes.bookings import bookings_bp
 from routes.chatbot import chatbot_bp
+from agent import agent_bp  # Import agent blueprint
 
 # Register blueprints with URL prefixes
 app.register_blueprint(auth_bp, url_prefix='/api/users')
 app.register_blueprint(services_bp, url_prefix='/api/services')
-app.register_blueprint(bookings_bp, url_prefix='/api/bookings')  # Add this line
+app.register_blueprint(bookings_bp, url_prefix='/api/bookings')
 app.register_blueprint(chatbot_bp, url_prefix='/api/chatbot')
+app.register_blueprint(agent_bp, url_prefix='/api/agent')  # Register agent routes
 # app.register_blueprint(user_bp, url_prefix='/api/user-details')
+
 # Add more blueprints as needed
 
 # Run the Flask application

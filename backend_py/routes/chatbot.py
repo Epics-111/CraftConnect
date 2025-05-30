@@ -22,7 +22,7 @@ def chat():
             return jsonify({"msg": "Message is required"}), 400
         
         # Define contextual instructions for the AI
-        system_prompt = """
+        system_prompt = f"""
 You are the CraftConnect Assistant, a helpful AI for a platform that connects service providers with customers.
 
 About CraftConnect:

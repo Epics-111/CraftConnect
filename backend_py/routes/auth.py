@@ -5,7 +5,6 @@ from utils.encryption import encrypt, decrypt, hash_email
 from bson.objectid import ObjectId
 import traceback
 from app import users_collection, app  # Import the collection
-#doing cors
 from flask_cors import CORS
 
 # Initialize CORS for the auth blueprint
