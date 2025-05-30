@@ -17,7 +17,7 @@ const Chatbot = () => {
     setConversation(prev => [...prev, { user: message, bot: "..." }]);
     
     try {
-      const endpoint = "/api/chatbot/chat";
+      const endpoint = "/api/agent/chat";
       const response = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

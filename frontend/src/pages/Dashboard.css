@@ -195,3 +195,246 @@
     color: #4b5563;
     font-size: 1.125rem;
   }
+
+/* Marquee Wrapper */
+.marquee-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Manual Scroll Buttons */
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  color: #4a5568;
+  font-size: 18px;
+}
+
+.scroll-button:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  color: #2b6cb0;
+}
+
+.scroll-button-left {
+  left: 10px;
+}
+
+.scroll-button-right {
+  right: 10px;
+}
+
+/* Marquee Container */
+.marquee-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  position: relative;
+  background: linear-gradient(90deg, rgba(249,250,251,0) 0%, rgba(249,250,251,1) 5%, rgba(249,250,251,1) 95%, rgba(249,250,251,0) 100%);
+  padding: 20px 60px;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.marquee-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Marquee Content */
+.marquee-content {
+  display: flex;
+  gap: 24px;
+  animation: marquee 40s linear infinite;
+  width: max-content;
+}
+
+/* Pause animation when user is scrolling or hovering */
+.marquee-container:hover .marquee-content,
+.marquee-container.user-scrolling .marquee-content {
+  animation-play-state: paused;
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.33%);
+  }
+}
+
+/* Service Card for Marquee */
+.service-card-marquee {
+  flex: 0 0 auto;
+  width: 200px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.service-card-marquee:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Inner Container */
+.service-card-inner-marquee {
+  padding: 20px;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Service Image */
+.service-img-marquee {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: transform 0.3s ease;
+}
+
+.service-card-marquee:hover .service-img-marquee {
+  transform: scale(1.1);
+}
+
+/* Service Name */
+.service-name-marquee {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Scroll Hint */
+.scroll-hint {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Add smooth fade effect at edges */
+.marquee-container::before,
+.marquee-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.marquee-container::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(249, 250, 251, 1), rgba(249, 250, 251, 0));
+}
+
+.marquee-container::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(249, 250, 251, 1), rgba(249, 250, 251, 0));
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .service-card-marquee {
+    width: 160px;
+  }
+  
+  .service-img-marquee {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .service-name-marquee {
+    font-size: 14px;
+  }
+  
+  .marquee-content {
+    animation-duration: 35s;
+    gap: 16px;
+  }
+  
+  .scroll-button {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .marquee-container {
+    padding: 20px 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-card-marquee {
+    width: 140px;
+  }
+  
+  .service-card-inner-marquee {
+    padding: 16px;
+  }
+  
+  .marquee-content {
+    animation-duration: 30s;
+    gap: 12px;
+  }
+  
+  .scroll-button {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+  }
+  
+  .scroll-button-left {
+    left: 5px;
+  }
+  
+  .scroll-button-right {
+    right: 5px;
+  }
+  
+  .marquee-container {
+    padding: 20px 45px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .scroll-button {
+    opacity: 0.8;
+  }
+  
+  .marquee-container {
+    -webkit-overflow-scrolling: touch;
+  }
+}

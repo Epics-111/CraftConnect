@@ -45,7 +45,7 @@ const ChatbotWidget = () => {
     
     try {
       // Call the chatbot API endpoint using the apiRequest utility
-      const response = await apiRequest("/api/chatbot/chat", "POST", { message: userMessage });
+      const response = await apiRequest("/api/agent/chat", "POST", { message: userMessage });
       
       // Add bot response to conversation
       setConversation(prev => [...prev, { 
