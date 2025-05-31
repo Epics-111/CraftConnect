@@ -3,7 +3,22 @@ import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
-import { FaUsers, FaTools, FaCheckCircle, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { 
+  FaUsers, 
+  FaTools, 
+  FaCheckCircle, 
+  FaChevronLeft, 
+  FaChevronRight, 
+  FaShieldAlt, 
+  FaBolt, 
+  FaTrophy,
+  FaSearch,
+  FaCalendarCheck,
+  FaThumbsUp,
+  FaHeart,
+  FaStar,
+  FaMedal
+} from "react-icons/fa";
 import "./Dashboard.css";
 
 const services = [
@@ -151,51 +166,107 @@ const Dashboard = () => {
             <FaChevronRight />
           </button>
         </div>
-        
-        {/* <div className="scroll-hint text-center mt-4 text-gray-500 text-sm">
-          Use mouse wheel, touch, or arrow buttons to scroll • Auto-scroll pauses during interaction
-        </div> */}
+      </section>
+
+      {/* Why Choose CraftConnect Section */}
+      <section className="why-choose-section bg-gray-900 text-white py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12">Why Choose CraftConnect?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="why-choose-item">
+              <div className="why-choose-icon-wrapper">
+                <FaShieldAlt className="why-choose-icon" />
+              </div>
+              <h3 className="why-choose-title">Verified Professionals</h3>
+              <p className="why-choose-desc">All service providers are background checked and verified for your safety</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-choose-icon-wrapper">
+                <FaTrophy className="why-choose-icon" />
+              </div>
+              <h3 className="why-choose-title">Quality Guarantee</h3>
+              <p className="why-choose-desc">100% satisfaction or your money back. We stand behind our work</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-choose-icon-wrapper">
+                <FaBolt className="why-choose-icon" />
+              </div>
+              <h3 className="why-choose-title">Quick Booking</h3>
+              <p className="why-choose-desc">Book instantly and get confirmed within hours. No waiting around</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-choose-icon-wrapper">
+                <FaHeart className="why-choose-icon" />
+              </div>
+              <h3 className="why-choose-title">Customer Love</h3>
+              <p className="why-choose-desc">Highly rated by thousands of satisfied customers across the platform</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* How It Works */}
-      <section className="how-it-works bg-gray-200 py-16">
-        <h2 className="text-4xl font-bold text-center text-gray-800">How It Works</h2>
-        <div className="steps-container">
-          <div className="step">
-            <FaTools className="step-icon" />
-            <h3>Find a Service</h3>
-            <p>Browse through verified professionals for your needs.</p>
-          </div>
-          <div className="step">
-            <FaUsers className="step-icon" />
-            <h3>Book a Professional</h3>
-            <p>Schedule an appointment at your convenience.</p>
-          </div>
-          <div className="step">
-            <FaCheckCircle className="step-icon" />
-            <h3>Get the Job Done</h3>
-            <p>Enjoy hassle-free, top-quality services.</p>
+      <section className="how-it-works bg-gradient-to-br from-blue-50 to-indigo-100 py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">How It Works</h2>
+          <div className="steps-container">
+            <div className="step-card">
+              <div className="step-number">1</div>
+              <div className="step-icon-wrapper step-icon-blue">
+                <FaSearch className="step-icon" />
+              </div>
+              <h3 className="step-title">Find a Service</h3>
+              <p className="step-desc">Browse through verified professionals for your needs. Use our smart search to find exactly what you're looking for.</p>
+            </div>
+            <div className="step-card">
+              <div className="step-number">2</div>
+              <div className="step-icon-wrapper step-icon-green">
+                <FaCalendarCheck className="step-icon" />
+              </div>
+              <h3 className="step-title">Book a Professional</h3>
+              <p className="step-desc">Schedule an appointment at your convenience. Choose your preferred time slot and provide service details.</p>
+            </div>
+            <div className="step-card">
+              <div className="step-number">3</div>
+              <div className="step-icon-wrapper step-icon-purple">
+                <FaThumbsUp className="step-icon" />
+              </div>
+              <h3 className="step-title">Get the Job Done</h3>
+              <p className="step-desc">Enjoy hassle-free, top-quality services. Rate your experience and help others make informed decisions.</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="stats bg-indigo-600 text-white py-12">
-        <div className="stats-container">
-          <div className="stat">
-            <FaUsers className="stat-icon" />
-            <h3>5,000+</h3>
-            <p>Happy Customers</p>
-          </div>
-          <div className="stat">
-            <FaTools className="stat-icon" />
-            <h3>300+</h3>
-            <p>Verified Service Providers</p>
-          </div>
-          <div className="stat">
-            <FaCheckCircle className="stat-icon" />
-            <h3>10,000+</h3>
-            <p>Completed Jobs</p>
+      <section className="stats bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Our Achievements</h2>
+          <div className="stats-container">
+            <div className="stat-card">
+              <div className="stat-icon-wrapper stat-icon-yellow">
+                <FaHeart className="stat-icon" />
+              </div>
+              <h3 className="stat-number">5,000+</h3>
+              <p className="stat-label">Happy Customers</p>
+              <p className="stat-subtitle">Satisfied with our services</p>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon-wrapper stat-icon-blue">
+                <FaStar className="stat-icon" />
+              </div>
+              <h3 className="stat-number">300+</h3>
+              <p className="stat-label">Verified Professionals</p>
+              <p className="stat-subtitle">Skilled & background checked</p>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon-wrapper stat-icon-green">
+                <FaMedal className="stat-icon" />
+              </div>
+              <h3 className="stat-number">10,000+</h3>
+              <p className="stat-label">Completed Jobs</p>
+              <p className="stat-subtitle">Successfully delivered</p>
+            </div>
           </div>
         </div>
       </section>
