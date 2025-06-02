@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaRobot, FaTimes, FaChevronUp, FaChevronDown, FaPaperPlane } from "react-icons/fa";
+import { FaRobot, FaTimes, FaChevronUp, FaChevronDown, FaPaperPlane, FaInfoCircle, FaSearch, FaCalendarCheck, FaHistory, FaUser } from "react-icons/fa";
 import "./ChatbotWidget.css";
 import { apiRequest } from "../api"; // Import the API utility
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [showCapabilities, setShowCapabilities] = useState(false);
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,15 +19,134 @@ const ChatbotWidget = () => {
     }
   }, [conversation, isOpen, isMinimized]);
 
+  // Capabilities data
+  const capabilities = [
+    { icon: <FaSearch />, text: "Find services by type", example: "Find plumber" },
+    { icon: <FaSearch />, text: "Search nearby services", example: "Services near me" },
+    { icon: <FaCalendarCheck />, text: "Help with bookings", example: "How to book?" },
+    { icon: <FaHistory />, text: "Check booking history", example: "My bookings" },
+    { icon: <FaUser />, text: "Profile assistance", example: "Update profile" },
+    { icon: <FaInfoCircle />, text: "Service details", example: "Tell me about..." }
+  ];
+
+  // Quick suggestion buttons
+  const quickSuggestions = [
+    "Find plumber",
+    "Services near me", 
+    "My bookings",
+    "How to book?"
+  ];
+
+  // Insert suggestion into input
+  const handleSuggestionClick = (suggestion) => {
+    setMessage(suggestion);
+    setShowCapabilities(false);
+  };
+
+  // Format bot response text
+  const formatBotResponse = (text) => {
+    if (!text) return "";
+    
+    // Split by double newlines for paragraphs
+    const paragraphs = text.split('\n\n');
+    
+    return paragraphs.map((paragraph, pIndex) => {
+      if (!paragraph.trim()) return null;
+      
+      // Split by single newlines for lines within paragraphs
+      const lines = paragraph.split('\n');
+      
+      return (
+        <div key={pIndex} className="response-paragraph">
+          {lines.map((line, lIndex) => {
+            if (!line.trim()) return null;
+            
+            // Check for different formatting patterns
+            if (line.includes('**') && line.includes('**')) {
+              // Bold text formatting
+              return (
+                <div key={lIndex} className="response-line bold-line">
+                  {formatInlineText(line)}
+                </div>
+              );
+            } else if (line.match(/^\d+\./)) {
+              // Numbered list items
+              return (
+                <div key={lIndex} className="response-line list-item numbered">
+                  {formatInlineText(line)}
+                </div>
+              );
+            } else if (line.startsWith('•') || line.startsWith('-')) {
+              // Bullet points
+              return (
+                <div key={lIndex} className="response-line list-item bulleted">
+                  {formatInlineText(line)}
+                </div>
+              );
+            } else if (line.includes('🎉') || line.includes('✅')) {
+              // Success messages
+              return (
+                <div key={lIndex} className="response-line success-line">
+                  {formatInlineText(line)}
+                </div>
+              );
+            } else if (line.includes('💰') || line.includes('₹')) {
+              // Price information
+              return (
+                <div key={lIndex} className="response-line price-line">
+                  {formatInlineText(line)}
+                </div>
+              );
+            } else if (line.includes('📧') || line.includes('📍') || line.includes('🔧')) {
+              // Service details
+              return (
+                <div key={lIndex} className="response-line service-detail">
+                  {formatInlineText(line)}
+                </div>
+              );
+            } else {
+              // Regular text
+              return (
+                <div key={lIndex} className="response-line">
+                  {formatInlineText(line)}
+                </div>
+              );
+            }
+          })}
+        </div>
+      );
+    });
+  };
+
+  // Format inline text (handle bold, emojis, etc.)
+  const formatInlineText = (text) => {
+    // Handle bold text **text**
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <strong key={index} className="bold-text">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
+    });
+  };
+
   const toggleChat = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
       setIsMinimized(false);
+      setShowCapabilities(false);
     }
   };
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
+    if (!isMinimized) {
+      setShowCapabilities(false);
+    }
   };
 
   const handleSend = async () => {
@@ -50,13 +170,15 @@ const ChatbotWidget = () => {
       // Add bot response to conversation
       setConversation(prev => [...prev, { 
         sender: "bot", 
-        text: response.reply 
+        text: response.reply,
+        formatted: true // Flag to indicate this needs formatting
       }]);
     } catch (error) {
       console.error("Error in chatbot:", error);
       setConversation(prev => [...prev, { 
         sender: "bot", 
-        text: "Sorry, I'm having trouble right now. Please try again later." 
+        text: "Sorry, I'm having trouble right now. Please try again later.",
+        formatted: false
       }]);
     } finally {
       setIsLoading(false);
@@ -84,6 +206,11 @@ const ChatbotWidget = () => {
               <span>CraftConnect Assistant</span>
             </div>
             <div className="chat-controls">
+              <FaInfoCircle 
+                onClick={() => setShowCapabilities(!showCapabilities)} 
+                className={`control-icon info-icon ${showCapabilities ? 'active' : ''}`}
+                title="Show capabilities"
+              />
               {isMinimized ? (
                 <FaChevronUp onClick={toggleMinimize} className="control-icon" />
               ) : (
@@ -95,10 +222,54 @@ const ChatbotWidget = () => {
           
           {!isMinimized && (
             <>
+              {/* Capabilities Panel - Collapsible */}
+              {showCapabilities && (
+                <div className="capabilities-panel">
+                  <div className="capabilities-header">
+                    <span>I can help you with:</span>
+                  </div>
+                  <div className="capabilities-grid">
+                    {capabilities.map((cap, index) => (
+                      <div 
+                        key={index} 
+                        className="capability-item"
+                        onClick={() => handleSuggestionClick(cap.example)}
+                        title={`Try: "${cap.example}"`}
+                      >
+                        <span className="capability-icon">{cap.icon}</span>
+                        <span className="capability-text">{cap.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="quick-suggestions">
+                    <span className="suggestions-label">Quick actions:</span>
+                    <div className="suggestion-chips">
+                      {quickSuggestions.map((suggestion, index) => (
+                        <button 
+                          key={index}
+                          className="suggestion-chip"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="chat-messages">
-                {conversation.length === 0 && (
+                {conversation.length === 0 && !showCapabilities && (
                   <div className="bot-message welcome-message">
-                    <p>Hello! How can I help you find the right service today?</p>
+                    <div className="response-paragraph">
+                      <div className="response-line">
+                        Hello! 👋 How can I help you find the right service today?
+                      </div>
+                      <div className="response-line welcome-hint">
+                        <FaInfoCircle className="hint-icon" />
+                        Click the info icon above to see what I can do!
+                      </div>
+                    </div>
                   </div>
                 )}
                 
@@ -107,13 +278,27 @@ const ChatbotWidget = () => {
                     key={index} 
                     className={`message ${msg.sender === "user" ? "user-message" : "bot-message"}`}
                   >
-                    {msg.text}
+                    {msg.sender === "bot" && msg.formatted ? 
+                      formatBotResponse(msg.text) : 
+                      <div className="response-paragraph">
+                        <div className="response-line">{msg.text}</div>
+                      </div>
+                    }
                   </div>
                 ))}
                 
                 {isLoading && (
                   <div className="message bot-message loading-message">
-                    <p>Thinking...</p>
+                    <div className="response-paragraph">
+                      <div className="response-line">
+                        <span className="typing-indicator">
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                        </span>
+                        Thinking...
+                      </div>
+                    </div>
                   </div>
                 )}
                 
