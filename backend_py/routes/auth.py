@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 import traceback
 from app import users_collection, app  # Import the collection
 from flask_cors import CORS
+from datetime import timedelta
 
 # Initialize CORS for the auth blueprint
 auth_bp = Blueprint('auth', __name__)
@@ -65,9 +66,15 @@ def login():
     if not user or not check_password_hash(user['password'], password):
         return jsonify({"msg": "Invalid credentials"}), 401
 
-    # Create an access token with the user's unique identifier
-    access_token = create_access_token(identity=str(user['_id']))
-    refresh_token = create_refresh_token(identity=str(user['_id']))
+    # Create tokens with expiration times
+    access_token = create_access_token(
+        identity=str(user['_id']), 
+        expires_delta=timedelta(hours=1)  # Access token expires in 1 hour
+    )
+    refresh_token = create_refresh_token(
+        identity=str(user['_id']),
+        expires_delta=timedelta(days=30)  # Refresh token expires in 30 days
+    )
     
     # Prepare user data for frontend - send the entire user schema
     user_data = {
@@ -101,9 +108,11 @@ def profile():
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
-    # The current identity is extracted from the refresh token
     current_user = get_jwt_identity()
-    new_access_token = create_access_token(identity=current_user)
+    new_access_token = create_access_token(
+        identity=current_user,
+        expires_delta=timedelta(hours=1)  # New access token expires in 1 hour
+    )
     
     # Get the updated user information
     user = users_collection.find_one({"_id": ObjectId(current_user)})
