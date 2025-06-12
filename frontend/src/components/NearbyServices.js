@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './NearbyServices.css';
+import ServiceCard from './ServiceCard';
 
 const NearbyServices = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -59,8 +60,8 @@ const NearbyServices = () => {
   if (error) return <div className="error-message">{error}</div>;
 
   // Create OpenStreetMap URL with user location and marker
-  const mapUrl = userLocation ? 
-    `https://www.openstreetmap.org/export/embed.html?bbox=${userLocation.lng-0.02}%2C${userLocation.lat-0.02}%2C${userLocation.lng+0.02}%2C${userLocation.lat+0.02}&layer=mapnik&marker=${userLocation.lat}%2C${userLocation.lng}` :
+  const mapUrl = userLocation ?
+    `https://www.openstreetmap.org/export/embed.html?bbox=${userLocation.lng - 0.02}%2C${userLocation.lat - 0.02}%2C${userLocation.lng + 0.02}%2C${userLocation.lat + 0.02}&layer=mapnik&marker=${userLocation.lat}%2C${userLocation.lng}` :
     '';
 
   return (
@@ -68,12 +69,12 @@ const NearbyServices = () => {
       <div className="controls-container">
         <div className="radius-selector">
           <label htmlFor="radius-slider">Search Radius: {radius} km</label>
-          <input 
-            type="range" 
-            id="radius-slider" 
-            min="1" 
-            max="20" 
-            value={radius} 
+          <input
+            type="range"
+            id="radius-slider"
+            min="1"
+            max="20"
+            value={radius}
             onChange={handleRadiusChange}
             className="radius-slider"
           />
@@ -84,38 +85,33 @@ const NearbyServices = () => {
       <div className="services-map-container">
         <div className="map-container">
           {userLocation && (
-            <iframe 
-              title="OpenStreetMap" 
-              width="100%" 
-              height="100%" 
-              frameBorder="0" 
-              scrolling="no" 
-              marginHeight="0" 
-              marginWidth="0" 
+            <iframe
+              title="OpenStreetMap"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              scrolling="no"
+              marginHeight="0"
+              marginWidth="0"
               src={mapUrl}
             ></iframe>
           )}
         </div>
 
         <div className="services-list">
-          <h3>Services Near You</h3>
           {nearbyServices.length === 0 ? (
             <p>No services found in your area. Try increasing the search radius.</p>
           ) : (
-            <div className="services-grid">
-              {nearbyServices.map((service) => (
-                <div key={service._id} className="service-card">
-                  <h3>{service.title}</h3>
-                  <p className="service-description">{service.description}</p>
-                  <p className="service-provider">Provider: {service.provider_name}</p>
-                  <p className="service-price">
-                    Price: ${service.price.$numberDecimal || service.price}
-                  </p>
-                  <Link to={`/service/${service._id}`} className="view-details-btn">
-                    View Details
-                  </Link>
-                </div>
-              ))}
+            <div className="services-scroll-wrapper">
+              <div className="services-grid">
+                {nearbyServices.map((service) => (
+                  <ServiceCard 
+                    key={service._id} 
+                    service={service}
+                    className="nearby-card"
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
