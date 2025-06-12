@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import SkeletonLoader from '../components/SkeletonLoader';
 import { apiRequest } from '../api';
 import { FaCalendar, FaClock, FaCheckCircle, FaTimesCircle, FaEye, FaTimes, FaSpinner } from 'react-icons/fa';
 
@@ -119,10 +120,7 @@ const BookingHistory = () => {
         <h1 className="text-3xl font-bold text-center mb-8">Booking History</h1>
         
         {loading ? (
-          <div className="text-center">
-            <FaSpinner className="animate-spin text-4xl text-blue-500 mx-auto mb-4" />
-            <p>Loading your bookings...</p>
-          </div>
+          <SkeletonLoader type="bookingHistory" />
         ) : error ? (
           <div className="text-red-500 text-center bg-red-50 p-6 rounded-lg">
             <p className="text-lg font-medium mb-2">Error</p>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BookingForm from "../components/BookingForm";
+import SkeletonLoader from "../components/SkeletonLoader";
 import { apiRequest } from "../api";
 import { 
   FaMapMarkerAlt, 
@@ -221,26 +222,7 @@ const ServiceDetail = () => {
     return (
       <>
         <Header />
-        <div className="loading-container">
-          <div className="loading-content">
-            <div className="animate-pulse">
-              <div className="loading-hero">
-                <div className="loading-gif"></div>
-                <div className="loading-title"></div>
-                <div className="loading-subtitle"></div>
-              </div>
-              
-              <div className="loading-grid">
-                <div className="loading-section">
-                  <div className="loading-bar loading-bar-full"></div>
-                  <div className="loading-bar loading-bar-large"></div>
-                  <div className="loading-bar loading-bar-medium"></div>
-                </div>
-                <div className="loading-sidebar"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SkeletonLoader type="serviceDetails" />
         <Footer />
       </>
     );
