@@ -174,12 +174,6 @@
   padding: 1.5rem;
   border-radius: 0.75rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  color: white;
-  transition: transform 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: scale(1.05);
 }
 
 .stat-card-green {

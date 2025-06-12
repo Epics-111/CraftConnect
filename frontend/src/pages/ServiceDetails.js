@@ -325,27 +325,6 @@ const ServiceDetail = () => {
             {/* Left Column */}
             <div className="space-y-6">
               
-              {/* Stats Cards */}
-              <div className="stats-grid">
-                <div className="stat-card stat-card-green">
-                  <FaCheckCircle className="stat-icon" />
-                  <h3 className="stat-title">Completed Jobs</h3>
-                  <p className="stat-value">{serviceStats.completedJobs}+</p>
-                </div>
-                
-                <div className="stat-card stat-card-blue">
-                  <FaUsers className="stat-icon" />
-                  <h3 className="stat-title">Happy Customers</h3>
-                  <p className="stat-value">{Math.floor(serviceStats.completedJobs * 0.95)}+</p>
-                </div>
-                
-                <div className="stat-card stat-card-purple">
-                  <FaShieldAlt className="stat-icon" />
-                  <h3 className="stat-title">Verified</h3>
-                  <p className="stat-subtitle">Professional</p>
-                </div>
-              </div>
-
               {/* Service Details Card */}
               <div className="info-card">
                 <div className="card-header card-header-indigo">
@@ -402,10 +381,10 @@ const ServiceDetail = () => {
                 <div className="card-content">
                   <div className="provider-info">
                     <div className="provider-avatar">
-                      {service.provider_name.charAt(0)}
+                      {service.provider_name ? service.provider_name.charAt(0) : "?"}
                     </div>
                     <div>
-                      <h3 className="provider-name">{service.provider_name}</h3>
+                      <h3 className="provider-name">{service.provider_name || "Unknown Provider"}</h3>
                       <p className="provider-title">Verified Professional</p>
                     </div>
                   </div>
@@ -415,7 +394,7 @@ const ServiceDetail = () => {
                       <FaPhone className="detail-icon detail-icon-blue" />
                       <div>
                         <p className="detail-label">Phone</p>
-                        <p className="detail-value">{service.provider_contact}</p>
+                        <p className="detail-value">{service.provider_contact || "N/A"}</p>
                       </div>
                     </div>
                     
@@ -423,13 +402,35 @@ const ServiceDetail = () => {
                       <FaEnvelope className="detail-icon detail-icon-green" />
                       <div>
                         <p className="detail-label">Email</p>
-                        <p className="detail-value">{service.provider_email}</p>
+                        <p className="detail-value">{service.provider_email || "N/A"}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div className="stats-grid">
+                <div className="stat-card stat-card-green">
+                  <FaCheckCircle className="stat-icon" />
+                  <h3 className="stat-title">Completed Jobs</h3>
+                  <p className="stat-value">{serviceStats.completedJobs}+</p>
+                </div>
+                
+                <div className="stat-card stat-card-blue">
+                  <FaUsers className="stat-icon" />
+                  <h3 className="stat-title">Happy Customers</h3>
+                  <p className="stat-value">{Math.floor(serviceStats.completedJobs * 0.95)}+</p>
+                </div>
+                
+                <div className="stat-card stat-card-purple">
+                  <FaShieldAlt className="stat-icon" />
+                  <h3 className="stat-title">Verified</h3>
+                  <p className="stat-subtitle">Professional</p>
+                </div>
+              </div>
+
             </div>
+
+            
 
             {/* Right Column - Booking Form */}
             <div className="booking-sidebar">

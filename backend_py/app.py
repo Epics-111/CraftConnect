@@ -36,11 +36,11 @@ CORS(app, resources={
 # Initialize extensions
 jwt = JWTManager(app)
 mongo = PyMongo(app)
-limiter = Limiter(
-    app=app,
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
-)
+# limiter = Limiter(
+#     app=app,
+#     key_func=get_remote_address,
+#     default_limits=["200 per day", "50 per hour"]
+# )
 
 # Create a users_collection reference for other modules to use
 users_collection = mongo.db.users

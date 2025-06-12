@@ -71,14 +71,16 @@ const ServiceCard = ({ service, showPrice = true, className = "" }) => {
         </div>
         
         {/* Provider Info */}
-        <div className="provider-section-traced">
-          <div className="provider-avatar-traced">
-            {service.provider_name?.charAt(0).toUpperCase() || 'P'}
+          <div className="provider-section-traced">
+            <div className="provider-avatar-traced">
+              {service.provider_name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <span className="provider-name-traced">
+              {service.provider_name || 'Unknown Provider'}
+            </span>
           </div>
-          <span className="provider-name-traced">{service.provider_name}</span>
-        </div>
-        
-        {/* Action Button */}
+          
+          {/* Action Button */}
         <Link to={`/service/${service._id}`} className="explore-btn-traced">
           <span>View Details</span>
           <div className="btn-arrow-traced">→</div>
