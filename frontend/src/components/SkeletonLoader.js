@@ -228,6 +228,51 @@ const SkeletonLoader = ({ type }) => {
       </div>
     );
   }
+
+  if (type === "serviceGrid") {
+    return (
+      <div className="animate-pulse">
+        {/* Header skeleton */}
+        <div className="text-center mb-8">
+          <div className="h-10 bg-gray-300 rounded w-1/3 mx-auto mb-4"></div>
+          <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto mb-4"></div>
+          <div className="h-6 bg-gray-100 rounded w-1/4 mx-auto"></div>
+        </div>
+
+        {/* Grid skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[...Array(12)].map((_, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
+              {/* Image skeleton */}
+              <div className="h-48 bg-gray-200"></div>
+              
+              {/* Content skeleton */}
+              <div className="p-4">
+                <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
+                
+                {/* Price and rating */}
+                <div className="flex justify-between items-center">
+                  <div className="h-6 bg-green-200 rounded w-1/3"></div>
+                  <div className="h-4 bg-yellow-200 rounded w-1/4"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination skeleton */}
+        <div className="flex justify-center items-center space-x-2 mt-8">
+          <div className="h-10 bg-gray-200 rounded w-20"></div>
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="h-10 w-10 bg-gray-200 rounded"></div>
+          ))}
+          <div className="h-10 bg-gray-200 rounded w-16"></div>
+        </div>
+      </div>
+    );
+  }
   
   return null;
 };
