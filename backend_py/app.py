@@ -52,13 +52,18 @@ from routes.bookings import bookings_bp
 from routes.chatbot import chatbot_bp
 from agent import agent_bp  # Import agent blueprint
 
+# Import the scheduler
+from utils.scheduler import start_scheduler
+
 # Register blueprints with URL prefixes
 app.register_blueprint(auth_bp, url_prefix='/api/users')
 app.register_blueprint(services_bp, url_prefix='/api/services')
 app.register_blueprint(bookings_bp, url_prefix='/api/bookings')
 app.register_blueprint(chatbot_bp, url_prefix='/api/chatbot')
 app.register_blueprint(agent_bp, url_prefix='/api/agent')  # Register agent routes
-# app.register_blueprint(user_bp, url_prefix='/api/user-details')
+
+# Start the background scheduler when the app starts
+start_scheduler()
 
 # Add more blueprints as needed
 

@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson.objectid import ObjectId
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from pymongo.errors import PyMongoError
 from flask_cors import CORS
 
@@ -360,3 +360,65 @@ def update_provider_rating(provider_id):
             )
     except Exception as e:
         app.logger.error(f"Error updating provider rating: {str(e)}")
+
+@bookings_bp.route('/auto-complete', methods=['PUT'])
+@jwt_required()
+def auto_complete_bookings():
+    try:
+        from dateutil.parser import parse as parse_date
+        
+        # Calculate cutoff time (2 hours ago)
+        cutoff_time = datetime.now() - timedelta(hours=2)
+        
+        # Get all pending/confirmed bookings
+        pending_bookings = list(bookings_collection.find({
+            'status': {'$in': ['pending', 'confirmed']}
+        }))
+        
+        updated_count = 0
+        
+        # Check each booking individually
+        for booking in pending_bookings:
+            try:
+                booking_time = None
+                
+                # Try different field names
+                if 'booking_datetime' in booking:
+                    booking_time = booking['booking_datetime']
+                elif 'booking_date' in booking:
+                    booking_time = booking['booking_date']
+                elif 'date' in booking:
+                    booking_time = booking['date']
+                
+                if booking_time:
+                    # If it's a string, parse it
+                    if isinstance(booking_time, str):
+                        booking_time = parse_date(booking_time)
+                    
+                    # Check if booking is older than cutoff
+                    if booking_time < cutoff_time:
+                        result = bookings_collection.update_one(
+                            {'_id': booking['_id']},
+                            {'$set': {'status': 'completed'}}
+                        )
+                        if result.modified_count > 0:
+                            updated_count += 1
+                            
+            except Exception as booking_error:
+                app.logger.error(f"Error processing booking {booking.get('_id')}: {str(booking_error)}")
+                continue
+        
+        app.logger.info(f"Manual auto-complete: Updated {updated_count} bookings")
+        
+        return jsonify({
+            'message': f'Auto-completed {updated_count} bookings',
+            'updated': updated_count,
+            'total_pending': len(pending_bookings)
+        }), 200
+        
+    except Exception as e:
+        app.logger.error(f"Error in auto-complete: {str(e)}")
+        return jsonify({
+            'message': 'Failed to auto-complete bookings',
+            'error': str(e)
+        }), 500
