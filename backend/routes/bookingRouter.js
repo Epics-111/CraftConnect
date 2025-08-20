@@ -73,6 +73,13 @@ router.get('/history', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    
+    // Update any expired pending bookings
+    const now = new Date();
+    await Booking.updateMany(
+      { user: user._id, status: 'Pending', booking_date: { $lt: now } },
+      { $set: { status: 'Expired' } }
+    );
 
     const bookings = await Booking.find({ user: user._id })
       .populate('service')
