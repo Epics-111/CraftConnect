@@ -5,54 +5,33 @@ import requests
 import os
 from app import app, mongo
 
+# Alternative more efficient version
 def auto_complete_bookings_task():
     """Background task to auto-complete bookings"""
     try:
         with app.app_context():
-            from dateutil.parser import parse as parse_date
             bookings_collection = mongo.db.bookings
+            cutoff_time = datetime.now()
             
-            # Calculate cutoff time (2 hours ago)
-            cutoff_time = datetime.now() - timedelta(hours=2)
+            # Update directly in database with MongoDB query
+            result = bookings_collection.update_many(
+                {
+                    '$and': [
+                        {'status': {'$nin': ['completed', 'cancelled']}},
+                        {
+                            '$or': [
+                                {'booking_datetime': {'$lt': cutoff_time}},
+                                {'booking_date': {'$lt': cutoff_time}},
+                                {'date': {'$lt': cutoff_time}},
+                                {'datetime': {'$lt': cutoff_time}}
+                            ]
+                        }
+                    ]
+                },
+                {'$set': {'status': 'completed'}}
+            )
             
-            # Get all pending/confirmed bookings
-            pending_bookings = list(bookings_collection.find({
-                'status': {'$in': ['pending', 'confirmed']}
-            }))
-            
-            updated_count = 0
-            
-            # Check each booking individually
-            for booking in pending_bookings:
-                try:
-                    booking_time = None
-                    
-                    # Try different field names
-                    if 'booking_datetime' in booking:
-                        booking_time = booking['booking_datetime']
-                    elif 'booking_date' in booking:
-                        booking_time = booking['booking_date']
-                    elif 'date' in booking:
-                        booking_time = booking['date']
-                    
-                    if booking_time:
-                        # If it's a string, parse it
-                        if isinstance(booking_time, str):
-                            booking_time = parse_date(booking_time)
-                        
-                        # Check if booking is older than cutoff
-                        if booking_time < cutoff_time:
-                            result = bookings_collection.update_one(
-                                {'_id': booking['_id']},
-                                {'$set': {'status': 'completed'}}
-                            )
-                            if result.modified_count > 0:
-                                updated_count += 1
-                                
-                except Exception as booking_error:
-                    app.logger.error(f"Error processing booking {booking.get('_id')}: {str(booking_error)}")
-                    continue
-            
+            updated_count = result.modified_count
             app.logger.info(f"Cron job: Auto-completed {updated_count} bookings at {datetime.now()}")
             return updated_count
             
