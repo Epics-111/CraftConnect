@@ -69,4 +69,5 @@ start_scheduler()
 
 # Run the Flask application
 if __name__ == '__main__':
+    start_scheduler()  # Start the background scheduler
     app.run(debug=True)
