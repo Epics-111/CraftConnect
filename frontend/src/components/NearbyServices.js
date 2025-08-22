@@ -3,6 +3,21 @@ import axios from 'axios';
 import './NearbyServices.css';
 import ServiceCard from './ServiceCard';
 
+// Add Leaflet imports
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Fix default icon paths (necessary for many bundlers)
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
 const NearbyServices = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [nearbyServices, setNearbyServices] = useState([]);
@@ -11,7 +26,7 @@ const NearbyServices = () => {
   const [radius, setRadius] = useState(5);
 
   useEffect(() => {
-    // Get user's location
+    // Get user's location once, then fetch services
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -19,8 +34,8 @@ const NearbyServices = () => {
           setUserLocation({ lat: latitude, lng: longitude });
           fetchNearbyServices(latitude, longitude, radius);
         },
-        (error) => {
-          console.error("Error getting location:", error);
+        (err) => {
+          console.error("Error getting location:", err);
           setError("Unable to access your location. Please enable location services.");
           setLoading(false);
         }
@@ -29,6 +44,17 @@ const NearbyServices = () => {
       setError("Geolocation is not supported by your browser.");
       setLoading(false);
     }
+    // run only once on mount; when radius changes we'll call fetch separately below
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // refetch when radius changes and we already have userLocation
+  useEffect(() => {
+    if (userLocation) {
+      setLoading(true);
+      fetchNearbyServices(userLocation.lat, userLocation.lng, radius);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [radius]);
 
   const fetchNearbyServices = async (lat, lng, radius) => {
@@ -38,15 +64,15 @@ const NearbyServices = () => {
       );
       setNearbyServices(response.data);
       setLoading(false);
-    } catch (error) {
-      console.error("Error fetching nearby services:", error);
+    } catch (err) {
+      console.error("Error fetching nearby services:", err);
       setError("Failed to fetch nearby services. Please try again.");
       setLoading(false);
     }
   };
 
   const handleRadiusChange = (e) => {
-    setRadius(e.target.value);
+    setRadius(Number(e.target.value));
   };
 
   if (loading) return (
@@ -58,10 +84,38 @@ const NearbyServices = () => {
 
   if (error) return <div className="error-message">{error}</div>;
 
-  // Create OpenStreetMap URL with user location and marker
-  const mapUrl = userLocation ?
-    `https://www.openstreetmap.org/export/embed.html?bbox=${userLocation.lng - 0.02}%2C${userLocation.lat - 0.02}%2C${userLocation.lng + 0.02}%2C${userLocation.lat + 0.02}&layer=mapnik&marker=${userLocation.lat}%2C${userLocation.lng}` :
-    '';
+  // helper: try common places to get lat/lng from service object
+  const getServiceLatLng = (service) => {
+    if (!service) return null;
+    if (service.location && Array.isArray(service.location.coordinates)) {
+      // GeoJSON style: [lng, lat]
+      const [lng, lat] = service.location.coordinates;
+      return [lat, lng];
+    }
+    if (service.latitude !== undefined && service.longitude !== undefined) {
+      return [service.latitude, service.longitude];
+    }
+    if (service.lat !== undefined && service.lng !== undefined) {
+      return [service.lat, service.lng];
+    }
+    if (service.coordinates && Array.isArray(service.coordinates)) {
+      // maybe [lat, lng]
+      const [a, b] = service.coordinates;
+      if (Math.abs(a) <= 90 && Math.abs(b) <= 180) return [a, b];
+    }
+    return null;
+  };
+
+  // small component to center map on user when available
+  const Recenter = ({ center }) => {
+    const map = useMap();
+    useEffect(() => {
+      if (center) map.setView(center, map.getZoom());
+    }, [center, map]);
+    return null;
+  };
+
+  const mapCenter = userLocation ? [userLocation.lat, userLocation.lng] : [0, 0];
 
   return (
     <div className="nearby-services-container">
@@ -82,18 +136,33 @@ const NearbyServices = () => {
       </div>
 
       <div className="services-map-container">
-        <div className="map-container">
+        <div className="map-container" style={{ height: 400 }}>
           {userLocation && (
-            <iframe
-              title="OpenStreetMap"
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              scrolling="no"
-              marginHeight="0"
-              marginWidth="0"
-              src={mapUrl}
-            ></iframe>
+            <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
+              <Recenter center={mapCenter} />
+              <TileLayer
+                attribution='&copy; OpenStreetMap contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {/* user marker */}
+              <Marker position={mapCenter}>
+                <Popup>You are here</Popup>
+              </Marker>
+
+              {/* service markers */}
+              {nearbyServices.map((service) => {
+                const pos = getServiceLatLng(service);
+                if (!pos) return null;
+                return (
+                  <Marker key={service._id} position={pos}>
+                    <Popup>
+                      <strong>{service.name || service.title || 'Service'}</strong>
+                      <div>{service.description || service.address || ''}</div>
+                    </Popup>
+                  </Marker>
+                );
+              })}
+            </MapContainer>
           )}
         </div>
 
