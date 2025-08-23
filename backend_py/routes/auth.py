@@ -4,7 +4,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from utils.encryption import encrypt, decrypt, hash_email
 from bson.objectid import ObjectId
 import traceback
-from app import users_collection, app  # Import the collection
+from extensions import mongo
+from flask import current_app as app
+
+# Collections
+users_collection = mongo.db.users
 # Optional: try to import model validators (may be absent)
 try:
     from models.user import validate_user, normalize_provider_location

@@ -6,7 +6,8 @@ from pymongo.errors import PyMongoError
 from flask_cors import CORS
 
 # Import app and db
-from app import mongo, app
+from extensions import mongo
+from flask import current_app as app
 
 # Initialize services blueprint
 services_bp = Blueprint('services', __name__)

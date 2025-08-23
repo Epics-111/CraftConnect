@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from extensions import mongo, jwt, limiter
 import os
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -33,14 +34,10 @@ CORS(app, resources={
     }
 })
 
-# Initialize extensions
-jwt = JWTManager(app)
-mongo = PyMongo(app)
-# limiter = Limiter(
-#     app=app,
-#     key_func=get_remote_address,
-#     default_limits=["200 per day", "50 per hour"]
-# )
+# Initialize extensions (use the instances from extensions.py)
+jwt.init_app(app)
+mongo.init_app(app)
+# limiter.init_app(app)   # enable if you want rate limits
 
 # Create a users_collection reference for other modules to use
 users_collection = mongo.db.users

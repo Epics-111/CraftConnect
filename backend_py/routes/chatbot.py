@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from flask_cors import CORS
 import google.generativeai as genai
 import os
-from app import app
+from flask import current_app as app
 
 # Initialize chatbot blueprint
 chatbot_bp = Blueprint('chatbot', __name__)
