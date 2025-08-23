@@ -1,7 +1,0 @@
-langchain-ibm
-python-dotenv
-httpx
-requests
-pydantic
-tqdm
-rich
