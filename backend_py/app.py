@@ -59,12 +59,18 @@ app.register_blueprint(bookings_bp, url_prefix='/api/bookings')
 app.register_blueprint(chatbot_bp, url_prefix='/api/chatbot')
 app.register_blueprint(agent_bp, url_prefix='/api/agent')  # Register agent routes
 
-# Start the background scheduler when the app starts (pass app instance)
-start_scheduler(app)
+# DO NOT start scheduler at import time (can block or start multiple times)
+# start_scheduler(app)
 
-# Add more blueprints as needed
+# Simple health endpoint for Railway /load-balancer checks
+@app.route('/health', methods=['GET'])
+def health():
+    return {"status": "ok"}, 200
 
 # Run the Flask application
 if __name__ == '__main__':
-    start_scheduler(app)  # Start the background scheduler (safe to call again)
-    app.run(debug=True)
+    # When using the reloader, only start scheduler in the child process
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or os.environ.get("FLASK_RUN_FROM_CLI") == "true":
+        start_scheduler(app)
+    # Bind to 0.0.0.0 and use the PORT provided by the environment (Railway sets PORT)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
