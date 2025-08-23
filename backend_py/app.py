@@ -59,12 +59,12 @@ app.register_blueprint(bookings_bp, url_prefix='/api/bookings')
 app.register_blueprint(chatbot_bp, url_prefix='/api/chatbot')
 app.register_blueprint(agent_bp, url_prefix='/api/agent')  # Register agent routes
 
-# Start the background scheduler when the app starts
-start_scheduler()
+# Start the background scheduler when the app starts (pass app instance)
+start_scheduler(app)
 
 # Add more blueprints as needed
 
 # Run the Flask application
 if __name__ == '__main__':
-    start_scheduler()  # Start the background scheduler
+    start_scheduler(app)  # Start the background scheduler (safe to call again)
     app.run(debug=True)
