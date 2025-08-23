@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./backend_py
+      dockerfile: Dockerfile
+      args:
+        - GUNICORN_WORKERS=1
+    image: craftconnect-backend:local
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      # pass any secret envs in your shell or CI, e.g. JWT_SECRET_KEY, MONGO_URI
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MONGO_URI=${MONGO_URI}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # When building frontend, point it to backend container; using host.docker.internal is convenient for mac/windows.
+        # For Linux you may need to use the backend service name or set REACT_APP_API_URL explicitly.
+        - REACT_APP_API_URL=http://host.docker.internal:5000
+    image: craftconnect-frontend:local
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
