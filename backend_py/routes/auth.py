@@ -5,6 +5,12 @@ from utils.encryption import encrypt, decrypt, hash_email
 from bson.objectid import ObjectId
 import traceback
 from app import users_collection, app  # Import the collection
+# Optional: try to import model validators (may be absent)
+try:
+    from models.user import validate_user, normalize_provider_location
+except Exception:
+    validate_user = None
+    normalize_provider_location = None
 from flask_cors import CORS
 from datetime import timedelta
 
@@ -191,11 +197,51 @@ def save_user_details():
         if role is not None:
             user_update["role"] = role
             
+        # --- New: validate and normalize providerDetails.location if provided ---
+        # Prefer model's normalizer when available
+        def _normalize_location(loc):
+            if normalize_provider_location:
+                return normalize_provider_location(loc)
+            # fallback normalizer
+            if not isinstance(loc, dict):
+                raise ValueError("location must be an object")
+            if loc.get("type") != "Point":
+                raise ValueError("location.type must be 'Point'")
+            coords = loc.get("coordinates")
+            if not isinstance(coords, (list, tuple)) or len(coords) != 2:
+                raise ValueError("location.coordinates must be [lng, lat]")
+            # Coerce to floats
+            lng = float(coords[0])
+            lat = float(coords[1])
+            return {"type": "Point", "coordinates": [lng, lat]}
+
         # Handle role-specific details
         if role == "provider" and data.get('providerDetails') is not None:
-            user_update["providerDetails"] = data.get('providerDetails')
+            provider_details = data.get('providerDetails') or {}
+            # Validate location if present
+            if provider_details.get('location') is not None:
+                try:
+                    provider_details['location'] = _normalize_location(provider_details['location'])
+                except Exception as e:
+                    return jsonify({"msg": "Invalid provider location", "error": str(e)}), 400
+            user_update["providerDetails"] = provider_details
         elif role == "consumer" and data.get('consumerDetails') is not None:
             user_update["consumerDetails"] = data.get('consumerDetails')
+
+        # Optional: run lightweight validation using model validators if enabled
+        if app.config.get("ENABLE_INPUT_VALIDATION", False) and validate_user:
+            # Build a minimal object to validate
+            tentative = {}
+            for k in ("name", "email", "age", "contact_no", "role"):
+                if data.get(k) is not None:
+                    tentative[k] = data.get(k)
+            if data.get("providerDetails") is not None:
+                tentative["providerDetails"] = data.get("providerDetails")
+            if data.get("consumerDetails") is not None:
+                tentative["consumerDetails"] = data.get("consumerDetails")
+            errors = validate_user(tentative, require_email=False)
+            if errors:
+                return jsonify({"msg": "Validation failed", "errors": errors}), 400
 
         # Only perform update if there are fields to update
         if not user_update:

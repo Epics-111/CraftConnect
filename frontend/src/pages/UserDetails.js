@@ -148,6 +148,27 @@ const UserDetails = () => {
     }
     
     setSaveStatus("saving");
+
+    // try to get location for provider (if available)
+    let providerLocation = undefined;
+    if (role === "provider" && navigator.geolocation) {
+      try {
+        providerLocation = await new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error("Geolocation timeout")), 10000);
+          navigator.geolocation.getCurrentPosition(
+            (pos) => { clearTimeout(timer); resolve(pos); },
+            (err) => { clearTimeout(timer); reject(err); },
+            { enableHighAccuracy: true, timeout: 10000 }
+          );
+        }).then(pos => {
+          const { latitude, longitude } = pos.coords;
+          return { type: "Point", coordinates: [longitude, latitude] };
+        });
+      } catch (err) {
+        console.warn("Could not obtain geolocation:", err);
+        providerLocation = undefined; // continue without location
+      }
+    }
     
     // Format the data properly
     const userDetails = {
@@ -160,7 +181,8 @@ const UserDetails = () => {
       providerDetails: role === "provider" ? { 
         serviceType, 
         experience: experience ? parseInt(experience, 10) : undefined, 
-        hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined 
+        hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined,
+        ...(providerLocation ? { location: providerLocation } : {})
       } : undefined,
       consumerDetails: role === "consumer" ? { 
         address 
@@ -190,7 +212,8 @@ const UserDetails = () => {
           ...(currentUser.providerDetails || {}),
           serviceType,
           experience: experience ? parseInt(experience, 10) : undefined,
-          hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined
+          hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined,
+          ...(providerLocation ? { location: providerLocation } : {})
         };
       } else if (role === "consumer") {
         updatedUser.consumerDetails = {

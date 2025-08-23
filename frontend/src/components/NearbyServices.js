@@ -18,6 +18,18 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
+// add after default icon mergeOptions (or near top of file)
+const userIcon = L.divIcon({
+  className: 'user-marker-icon',
+  html: `<svg width="36" height="36" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+           <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7z" fill="#ff2a00ff"/>
+           <circle cx="12" cy="9" r="2.5" fill="#ffffff"/>
+         </svg>`,
+  iconSize: [36, 36],
+  iconAnchor: [18, 36],
+  popupAnchor: [0, -36],
+});
+
 const NearbyServices = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [nearbyServices, setNearbyServices] = useState([]);
@@ -145,7 +157,7 @@ const NearbyServices = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {/* user marker */}
-              <Marker position={mapCenter}>
+              <Marker position={mapCenter} icon={userIcon}>
                 <Popup>You are here</Popup>
               </Marker>
 
