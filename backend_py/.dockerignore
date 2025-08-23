@@ -1,0 +1,38 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+env/
+venv/
+.venv/
+.Python
+
+# Local env files and secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# Testing / coverage / reports
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Docker-related local files
+Dockerfile
+.dockerignore
+
+# OS artifacts
+.DS_Store
+Thumbs.db

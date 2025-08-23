@@ -68,9 +68,9 @@ def health():
     return {"status": "ok"}, 200
 
 # Run the Flask application
-if __name__ == '__main__':
-    # When using the reloader, only start scheduler in the child process
-    if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or os.environ.get("FLASK_RUN_FROM_CLI") == "true":
-        start_scheduler(app)
-    # Bind to 0.0.0.0 and use the PORT provided by the environment (Railway sets PORT)
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+# if __name__ == '__main__':
+#     # When using the reloader, only start scheduler in the child process
+#     if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or os.environ.get("FLASK_RUN_FROM_CLI") == "true":
+#         start_scheduler(app)
+#     # Bind to 0.0.0.0 and use the PORT provided by the environment (Railway sets PORT)
+#     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
