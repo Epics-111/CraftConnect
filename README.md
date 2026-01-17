@@ -221,6 +221,7 @@ Ensure you have the following installed:
 ### Accessing the Application
 - Open your browser and navigate to [`http://localhost:3000`](http://localhost:3000) to access the frontend.
 - The frontend will communicate with the backend running on [`http://localhost:5000`](http://localhost:5000).
+- The hosted link is on [`https://craftconnect-app.azurewebsites.net/`](https://craftconnect-app.azurewebsites.net/).
 
 ---
 
