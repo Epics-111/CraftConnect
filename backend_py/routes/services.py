@@ -1,27 +1,32 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson.objectid import ObjectId
 import traceback
 from pymongo.errors import PyMongoError
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 from flask_cors import CORS
 
-# Import app and db
-from extensions import mongo
-from flask import current_app as app
+load_dotenv()
 
 # Initialize services blueprint
 services_bp = Blueprint('services', __name__)
 CORS(services_bp, resources={r"/api/*": {"origins": "*"}})
 
-# Collection reference
-services_collection = mongo.db.services
+# Helper function to get collections safely
+def get_services_collection():
+    mongo_uri = current_app.config.get("MONGO_URI") or os.getenv("MONGO_URI")
+    client = MongoClient(mongo_uri)
+    db = client.get_database("test")
+    return db.services
 
 # Create a geospatial index for location-based queries
 # This only needs to be run once after database setup
 # @services_bp.before_app_first_request
 # def create_geospatial_index():
 #     try:
-#         services_collection.create_index([("location", "2dsphere")])
+#         get_services_collection().create_index([("location", "2dsphere")])
 #         app.logger.info("Created geospatial index on services collection")
 #     except Exception as e:
 #         app.logger.error(f"Error creating geospatial index: {str(e)}")
@@ -31,7 +36,7 @@ services_collection = mongo.db.services
 @services_bp.route('/all', methods=['GET'])
 def get_all_services():
     try:
-        services = list(services_collection.find())
+        services = list(get_services_collection().find())
         # Convert ObjectId to string for JSON serialization
         for service in services:
             service['_id'] = str(service['_id'])
@@ -45,7 +50,7 @@ def get_all_services():
 @services_bp.route('/service/<service_id>', methods=['GET'])
 def get_service_by_id(service_id):
     try:
-        service = services_collection.find_one({"_id": ObjectId(service_id)})
+        service = get_services_collection().find_one({"_id": ObjectId(service_id)})
         if not service:
             return jsonify({"msg": "Service not found"}), 404
         
@@ -60,7 +65,7 @@ def get_service_by_id(service_id):
 @services_bp.route('/service/title/<title>', methods=['GET'])
 def search_service_by_title(title):
     try:
-        services = list(services_collection.find({
+        services = list(get_services_collection().find({
             "title": {"$regex": title, "$options": "i"}  # Case-insensitive search
         }))
         
@@ -93,7 +98,7 @@ def get_nearby_services():
         radius_meters = radius * 1000
         
         # Perform geospatial query
-        services = list(services_collection.find({
+        services = list(get_services_collection().find({
             "location": {
                 "$near": {
                     "$geometry": {
@@ -134,7 +139,7 @@ def create_service():
         data['created_by'] = get_jwt_identity()
         
         # Insert the new service
-        result = services_collection.insert_one(data)
+        result = get_services_collection().insert_one(data)
         
         # Return the ID of the newly created service
         return jsonify({
@@ -155,7 +160,7 @@ def update_service(service_id):
         user_id = get_jwt_identity()
         
         # Verify the service belongs to the user
-        service = services_collection.find_one({
+        service = get_services_collection().find_one({
             "_id": ObjectId(service_id),
             "created_by": user_id
         })
@@ -164,7 +169,7 @@ def update_service(service_id):
             return jsonify({"msg": "Service not found or you don't have permission to update it"}), 403
         
         # Update the service
-        result = services_collection.update_one(
+        result = get_services_collection().update_one(
             {"_id": ObjectId(service_id)},
             {"$set": data}
         )
@@ -185,7 +190,7 @@ def delete_service(service_id):
         user_id = get_jwt_identity()
         
         # Verify the service belongs to the user
-        service = services_collection.find_one({
+        service = get_services_collection().find_one({
             "_id": ObjectId(service_id),
             "created_by": user_id
         })
@@ -194,7 +199,7 @@ def delete_service(service_id):
             return jsonify({"msg": "Service not found or you don't have permission to delete it"}), 403
         
         # Delete the service
-        result = services_collection.delete_one({"_id": ObjectId(service_id)})
+        result = get_services_collection().delete_one({"_id": ObjectId(service_id)})
         
         if result.deleted_count == 0:
             return jsonify({"msg": "Service could not be deleted"}), 500

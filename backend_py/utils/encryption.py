@@ -16,13 +16,18 @@ def encrypt(text):
     return iv.hex() + ":" + encrypted.hex()
 
 def decrypt(enc_text):
-    iv_hex, encrypted_hex = enc_text.split(":")
-    iv = bytes.fromhex(iv_hex)
-    encrypted = bytes.fromhex(encrypted_hex)
-    cipher = AES.new(ENCRYPTION_KEY, AES.MODE_CBC, iv)
-    padded_text = cipher.decrypt(encrypted)
-    pad_length = padded_text[-1]
-    return padded_text[: -pad_length].decode('utf-8')
+    try:
+        iv_hex, encrypted_hex = enc_text.split(":")
+        iv = bytes.fromhex(iv_hex)
+        encrypted = bytes.fromhex(encrypted_hex)
+        cipher = AES.new(ENCRYPTION_KEY, AES.MODE_CBC, iv)
+        padded_text = cipher.decrypt(encrypted)
+        pad_length = padded_text[-1]
+        return padded_text[: -pad_length].decode('utf-8')
+    except Exception as e:
+        # If decryption fails, return the encrypted text or empty string
+        print(f"Decryption error: {e}")
+        return None
 
 def hash_email(email):
     return hashlib.sha256(email.encode('utf-8')).hexdigest()

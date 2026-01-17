@@ -1,23 +1,38 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson.objectid import ObjectId
 import traceback
 from datetime import datetime, timedelta
 from pymongo.errors import PyMongoError
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 from flask_cors import CORS
 
-# Import app and db
-from extensions import mongo
-from flask import current_app as app
+load_dotenv()
 
 # Initialize bookings blueprint
 bookings_bp = Blueprint('bookings', __name__)
 CORS(bookings_bp, resources={r"/api/*": {"origins": "*"}})
 
-# Collection references
-bookings_collection = mongo.db.bookings
-users_collection = mongo.db.users
-services_collection = mongo.db.services
+# Helper functions to get collections safely
+def get_bookings_collection():
+    mongo_uri = current_app.config.get("MONGO_URI") or os.getenv("MONGO_URI")
+    client = MongoClient(mongo_uri)
+    db = client.get_database("test")
+    return db.bookings
+
+def get_users_collection():
+    mongo_uri = current_app.config.get("MONGO_URI") or os.getenv("MONGO_URI")
+    client = MongoClient(mongo_uri)
+    db = client.get_database("test")
+    return db.users
+
+def get_services_collection():
+    mongo_uri = current_app.config.get("MONGO_URI") or os.getenv("MONGO_URI")
+    client = MongoClient(mongo_uri)
+    db = client.get_database("test")
+    return db.services
 
 # Create a new booking
 @bookings_bp.route('/create', methods=['POST'])
@@ -40,7 +55,7 @@ def create_booking():
             return jsonify({"msg": "Missing required fields"}), 400
         
         # Get service details and verify it exists
-        service = services_collection.find_one({"_id": ObjectId(service_id)})
+        service = get_services_collection().find_one({"_id": ObjectId(service_id)})
         if not service:
             return jsonify({"msg": "Service not found"}), 404
         
@@ -71,7 +86,7 @@ def create_booking():
         }
         
         # Insert the booking
-        result = bookings_collection.insert_one(booking)
+        result = get_bookings_collection().insert_one(booking)
         
         # Format the response to match what frontend expects
         response_data = {
@@ -116,13 +131,13 @@ def get_consumer_bookings():
             query = {"consumer_email": client_email}
         
         # Query bookings for this consumer
-        cursor = bookings_collection.find(query).sort("created_at", -1)  # Sort by newest first
+        cursor = get_bookings_collection().find(query).sort("created_at", -1)  # Sort by newest first
         
         # Process bookings for JSON serialization
         bookings = []
         for booking in cursor:
             # Get service details to match frontend expectations
-            service = services_collection.find_one({"_id": booking["service_id"]})
+            service = get_services_collection().find_one({"_id": booking["service_id"]})
             
             booking_json = {
                 '_id': str(booking['_id']),
@@ -160,12 +175,12 @@ def get_provider_bookings():
         skip = (page - 1) * per_page
         
         # Query bookings for this provider
-        cursor = bookings_collection.find(
+        cursor = get_bookings_collection().find(
             {"provider_id": ObjectId(provider_id)}
         ).sort("created_at", -1)  # Sort by newest first
         
         # Count total before pagination for metadata
-        total_bookings = bookings_collection.count_documents({"provider_id": ObjectId(provider_id)})
+        total_bookings = get_bookings_collection().count_documents({"provider_id": ObjectId(provider_id)})
         
         # Apply pagination
         bookings = list(cursor.skip(skip).limit(per_page))
@@ -205,7 +220,7 @@ def get_booking(booking_id):
         user_id = get_jwt_identity()
         
         # Find the booking
-        booking = bookings_collection.find_one({"_id": ObjectId(booking_id)})
+        booking = get_bookings_collection().find_one({"_id": ObjectId(booking_id)})
         
         if not booking:
             return jsonify({"msg": "Booking not found"}), 404
@@ -247,7 +262,7 @@ def update_booking_status(booking_id):
             return jsonify({"msg": "Invalid status value"}), 400
         
         # Find the booking
-        booking = bookings_collection.find_one({"_id": ObjectId(booking_id)})
+        booking = get_bookings_collection().find_one({"_id": ObjectId(booking_id)})
         
         if not booking:
             return jsonify({"msg": "Booking not found"}), 404
@@ -263,7 +278,7 @@ def update_booking_status(booking_id):
             return jsonify({"msg": "Consumers can only cancel bookings"}), 403
         
         # Update the booking status
-        result = bookings_collection.update_one(
+        result = get_bookings_collection().update_one(
             {"_id": ObjectId(booking_id)},
             {"$set": {
                 "status": new_status,
@@ -293,7 +308,7 @@ def add_booking_feedback(booking_id):
             return jsonify({"msg": "Rating must be an integer between 1 and 5"}), 400
         
         # Find the booking
-        booking = bookings_collection.find_one({"_id": ObjectId(booking_id)})
+        booking = get_bookings_collection().find_one({"_id": ObjectId(booking_id)})
         
         if not booking:
             return jsonify({"msg": "Booking not found"}), 404
@@ -313,7 +328,7 @@ def add_booking_feedback(booking_id):
             "created_at": datetime.now()
         }
         
-        result = bookings_collection.update_one(
+        result = get_bookings_collection().update_one(
             {"_id": ObjectId(booking_id)},
             {"$set": {"feedback": feedback}}
         )
@@ -347,12 +362,12 @@ def update_provider_rating(provider_id):
             }}
         ]
         
-        result = list(bookings_collection.aggregate(pipeline))
+        result = list(get_bookings_collection().aggregate(pipeline))
         
         if result:
             rating_data = result[0]
             # Update the provider's profile with the new rating data
-            users_collection.update_one(
+            get_users_collection().update_one(
                 {"_id": ObjectId(provider_id)},
                 {"$set": {
                     "providerDetails.average_rating": round(rating_data["average_rating"], 1),
@@ -372,7 +387,7 @@ def auto_complete_bookings():
         cutoff_time = datetime.now() - timedelta(hours=2)
         
         # Get all pending/confirmed bookings
-        pending_bookings = list(bookings_collection.find({
+        pending_bookings = list(get_bookings_collection().find({
             'status': {'$in': ['pending', 'confirmed']}
         }))
         
@@ -398,7 +413,7 @@ def auto_complete_bookings():
                     
                     # Check if booking is older than cutoff
                     if booking_time < cutoff_time:
-                        result = bookings_collection.update_one(
+                        result = get_bookings_collection().update_one(
                             {'_id': booking['_id']},
                             {'$set': {'status': 'completed'}}
                         )

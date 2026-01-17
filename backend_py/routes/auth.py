@@ -1,26 +1,35 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.encryption import encrypt, decrypt, hash_email
 from bson.objectid import ObjectId
 import traceback
-from extensions import mongo
-from flask import current_app as app
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
+from flask_cors import CORS
+from datetime import timedelta
 
-# Collections
-users_collection = mongo.db.users
+load_dotenv()
+
 # Optional: try to import model validators (may be absent)
 try:
     from models.user import validate_user, normalize_provider_location
 except Exception:
     validate_user = None
     normalize_provider_location = None
-from flask_cors import CORS
-from datetime import timedelta
 
 # Initialize CORS for the auth blueprint
 auth_bp = Blueprint('auth', __name__)
 CORS(auth_bp, resources={r"/api/*": {"origins": "*"}})
+
+# Helper function to get collections safely
+def get_users_collection():
+    # Get mongo URI from config or env
+    mongo_uri = current_app.config.get("MONGO_URI") or os.getenv("MONGO_URI")
+    client = MongoClient(mongo_uri)
+    db = client.get_database("test")  # Use the "test" database
+    return db.users
 
 # Signup Endpoint: Register a new user (Limit to 5 attempts per minute per IP)
 @auth_bp.route('/register', methods=['POST'])
@@ -38,7 +47,7 @@ def register():
     emailHash = hash_email(email)
 
     # Check if the user already exists using email_hash
-    if users_collection.find_one({"emailHash": emailHash}):
+    if get_users_collection().find_one({"emailHash": emailHash}):
         return jsonify({"msg": "User already exists"}), 409
 
     # Hash the user's password before saving
@@ -54,7 +63,7 @@ def register():
     }
 
     # Insert the new user into the database
-    users_collection.insert_one(user)
+    get_users_collection().insert_one(user)
     return jsonify({"msg": "User created successfully"}), 201
 
 # Login Endpoint: Authenticate user and return JWT token (Limit to 10 attempts per minute per IP)
@@ -72,7 +81,7 @@ def login():
     emailHash = hash_email(email)
 
     # Find the user in the database
-    user = users_collection.find_one({"emailHash": emailHash})
+    user = get_users_collection().find_one({"emailHash": emailHash})
     if not user or not check_password_hash(user['password'], password):
         return jsonify({"msg": "Invalid credentials"}), 401
 
@@ -125,7 +134,7 @@ def refresh():
     )
     
     # Get the updated user information
-    user = users_collection.find_one({"_id": ObjectId(current_user)})
+    user = get_users_collection().find_one({"_id": ObjectId(current_user)})
     
     if not user:
         return jsonify({"msg": "User not found"}), 404
@@ -252,7 +261,7 @@ def save_user_details():
             return jsonify({"msg": "No valid fields to update"}), 400
 
         # Update the user document
-        result = users_collection.update_one(
+        result = get_users_collection().update_one(
             {"_id": user_object_id},
             {"$set": user_update}
         )
@@ -261,7 +270,7 @@ def save_user_details():
             return jsonify({"msg": "User not found"}), 404
 
         # Fetch the updated user document to return
-        updated_user = users_collection.find_one({"_id": user_object_id})
+        updated_user = get_users_collection().find_one({"_id": user_object_id})
         if not updated_user:
             return jsonify({"msg": "User found but could not retrieve updated data"}), 500
             
